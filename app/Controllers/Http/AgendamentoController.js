@@ -7,7 +7,7 @@ class AgendamentoController {
 
   // Método para criar um agendamento
   async store({ request, response }) {
-    const data = request.only(['nome', 'data', 'horario', 'planoDental', 'celular', 'motivo', 'cpf', 'professional_id']);
+    const data = request.only(['nome', 'data', 'horario', 'planodental', 'celular', 'motivo', 'cpf', 'professional_id']);
     const professionalIdValue = data.professional_id ? parseInt(data.professional_id) : null;
 
     try {
@@ -77,7 +77,7 @@ class AgendamentoController {
   // AgendamentoController.js
   async update({ params, request, response }) {
     const id = params.id;
-    const { data, horario, status, infoAdicional } = request.post();
+    const { data, horario, status, infoadicional } = request.post();
 
     try {
       const agendamento = await Agendamento.find(id);
@@ -88,7 +88,7 @@ class AgendamentoController {
       if (data) agendamento.data = data;
       if (horario) agendamento.horario = horario;
       if (status !== undefined) agendamento.status = status;
-      if (infoAdicional) agendamento.info_adicional = infoAdicional;  // Ajuste o nome do campo conforme a tabela
+      if (infoadicional) agendamento.infoadicional = infoadicional;  // Nome do campo em minúsculas
 
       await agendamento.save();
       return response.status(200).json({ success: true, data: agendamento });
@@ -97,6 +97,7 @@ class AgendamentoController {
       return response.status(500).json({ error: 'Erro ao atualizar o agendamento.' });
     }
   }
+
 }
 
 module.exports = AgendamentoController

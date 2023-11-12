@@ -10,11 +10,11 @@ Route.group(() => {
 
 // Rotas de Agendamento
 Route.group(() => {
-  Route.post('/agendamentos', 'AgendamentoController.store').middleware(['auth']);
+  Route.post('/agendamentos', 'AgendamentoController.store')
   Route.get('/agendamentos', 'AgendamentoController.index').middleware(['auth']);
   Route.get('/agendamentos/:id', 'AgendamentoController.show').middleware(['auth']);
   Route.put('/agendamentos/:id', 'AgendamentoController.update').middleware(['auth']);
-  Route.get('/todos-agendamentos', 'AgendamentoController.todos')
+  Route.get('/todos-agendamentos', 'AgendamentoController.all').middleware(['auth']);
 }).prefix('api')
 
 // Rota de Teste (Considere remover ou proteger em produção)
@@ -33,9 +33,26 @@ Route.group(() => {
 
 // Rotas das empresas
 Route.group(() => {
-  Route.post('/companies', 'CompanyController.store')
-  Route.get('/companies', 'CompanyController.index')
-  Route.get('/companies/:company_id', 'CompanyController.show')
-  Route.put('/companies/:company_id', 'CompanyController.update')
-  Route.delete('/companies/:company_id', 'CompanyController.destroy')
+  Route.post('/companies', 'CompanyController.store').middleware(['auth']);
+  Route.get('/companies', 'CompanyController.index').middleware(['auth']);
+  Route.get('/companies/:company_id', 'CompanyController.show').middleware(['auth']);
+  Route.put('/companies/:company_id', 'CompanyController.update').middleware(['auth']);
+  Route.delete('/companies/:company_id', 'CompanyController.destroy').middleware(['auth']);
 }).prefix('api')
+
+
+// Rotas das datas indisponiveis
+Route.group(() => {
+  Route.post('/disabledDates', 'DisabledDateController.store').middleware(['auth']);
+  Route.get('/disabledDates', 'DisabledDateController.index').middleware(['auth']);
+  Route.delete('/disabledDates/:id', 'DisabledDateController.destroy').middleware(['auth']);
+  Route.put('/disabledDates/:id', 'DisabledDateController.update').middleware(['auth']);
+}).prefix('api')
+
+// Rotas das datas disponiveis
+Route.group(() => {
+  Route.post('/dias-semanais', 'WeekdayController.store').middleware(['auth']);
+  Route.get('/dias-semanais', 'WeekdayController.index').middleware(['auth']);
+  Route.put('/dias-semanais/:id', 'WeekdayController.update').middleware(['auth']);
+}).prefix('api')
+

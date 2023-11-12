@@ -13,7 +13,7 @@ class AgendamentosSchema extends Schema {
       table.text('celular').notNullable()
       table.text('motivo').notNullable()
       table.string('cpf', 14).notNullable()
-      table.integer('status').notNullable()
+      table.integer('status')
       table.text('infoadicional')
       table.integer('professional_id').unsigned().references('id').inTable('professionals')
     })
