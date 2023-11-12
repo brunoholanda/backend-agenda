@@ -15,7 +15,6 @@ Route.group(() => {
   Route.get('/agendamentos/:id', 'AgendamentoController.show').middleware(['auth']);
   Route.put('/agendamentos/:id', 'AgendamentoController.update').middleware(['auth']);
   Route.get('/todos-agendamentos', 'AgendamentoController.todos')
-
 }).prefix('api')
 
 // Rota de Teste (Considere remover ou proteger em produção)
@@ -29,4 +28,14 @@ Route.group(() => {
   Route.get('/professionals/:id', 'ProfessionalController.show').middleware(['auth']);
   Route.put('/professionals/:id', 'ProfessionalController.update').middleware(['auth']);
   Route.delete('/professionals/:id', 'ProfessionalController.destroy').middleware(['auth']);
+}).prefix('api')
+
+
+// Rotas das empresas
+Route.group(() => {
+  Route.post('/companies', 'CompanyController.store')
+  Route.get('/companies', 'CompanyController.index')
+  Route.get('/companies/:company_id', 'CompanyController.show')
+  Route.put('/companies/:company_id', 'CompanyController.update')
+  Route.delete('/companies/:company_id', 'CompanyController.destroy')
 }).prefix('api')
