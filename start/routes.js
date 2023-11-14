@@ -56,3 +56,7 @@ Route.group(() => {
   Route.put('/dias-semanais/:id', 'WeekdayController.update').middleware(['auth']);
 }).prefix('api')
 
+Route.group(() => {
+  Route.post('clients', 'ClientController.store')
+}).prefix('api')
+
