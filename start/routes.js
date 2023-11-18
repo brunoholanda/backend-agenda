@@ -15,6 +15,8 @@ Route.group(() => {
   Route.get('/agendamentos/:id', 'AgendamentoController.show').middleware(['auth']);
   Route.put('/agendamentos/:id', 'AgendamentoController.update').middleware(['auth']);
   Route.get('/todos-agendamentos', 'AgendamentoController.all').middleware(['auth']);
+  Route.get('/todos-agendamentos/:id', 'AgendamentoController.all').middleware(['auth']);
+
 }).prefix('api')
 
 // Rota de Teste (Considere remover ou proteger em produção)
@@ -28,6 +30,8 @@ Route.group(() => {
   Route.get('/professionals/:id', 'ProfessionalController.show').middleware(['auth']);
   Route.put('/professionals/:id', 'ProfessionalController.update').middleware(['auth']);
   Route.delete('/professionals/:id', 'ProfessionalController.destroy').middleware(['auth']);
+  Route.post('/professionals/authenticate', 'ProfessionalController.authenticate');
+
 }).prefix('api')
 
 
@@ -57,6 +61,16 @@ Route.group(() => {
 }).prefix('api')
 
 Route.group(() => {
-  Route.post('clients', 'ClientController.store')
+  Route.get('clients', 'ClientsController.index').middleware(['auth']);
+  Route.post('clients', 'ClientsController.store')
+  Route.get('clients/:id', 'ClientsController.show').middleware(['auth']);
+  Route.put('clients/:id', 'ClientsController.update').middleware(['auth']);
+  Route.patch('clients/:id', 'ClientsController.update').middleware(['auth']);
+  Route.delete('clients/:id', 'ClientsController.destroy').middleware(['auth']);
+  Route.post('clients/:id/notes', 'ClientsController.addNotes').middleware(['auth']);
+  Route.get('clients/:id/notes', 'ClientsController.getNotes').middleware(['auth']);
+
 }).prefix('api')
+
+Route.get('clients/cpf/:cpf', 'ClientsController.findByCpf').prefix('api')
 

@@ -7,11 +7,13 @@ class AgendamentoController {
 
   // Método para criar um agendamento
   async store({ request, response }) {
-    const data = request.only(['nome', 'data', 'horario', 'planodental', 'celular', 'motivo', 'cpf', 'professional_id']);
+    const data = request.only(['nome', 'data', 'horario', 'motivo', 'cpf', 'celular', 'planodental', 'professional_id', 'client_id', 'company_id']);
+
     const professionalIdValue = data.professional_id ? parseInt(data.professional_id) : null;
 
     try {
       const agendamento = await Agendamento.create({ ...data, professional_id: professionalIdValue });
+
       return response.status(200).json(agendamento);
     } catch (err) {
       console.error(err.message);
@@ -19,7 +21,6 @@ class AgendamentoController {
     }
   }
 
-  // Método para buscar agendamentos por data
   async index({ request, response }) {
     const { data, professional_id } = request.get();
 
@@ -42,23 +43,37 @@ class AgendamentoController {
     }
   }
 
-  async all({ request, response }) {
-    const { professional_id } = request.get();
+  async all({ request, response, params }) {
+    const { professional_id, client_id, company_id } = request.get();
+    const { id } = params;
 
     try {
-      let query = Agendamento.query();
+        let query = Agendamento.query();
 
-      if (professional_id) {
-        query.where('professional_id', professional_id);
+        if (professional_id) {
+            query.where('professional_id', professional_id);
+        }
+
+        if (client_id) {
+            query.where('client_id', client_id);
+        }
+
+
+        if (company_id) {
+          query.where('company_id', company_id);
       }
+        // Se um ID foi fornecido, filtre por esse ID
+        if (id) {
+            query.where('id', id);
+        }
 
-      const agendamentos = await query.fetch();
-      return response.status(200).json(agendamentos);
+        const agendamentos = await query.fetch();
+        return response.status(200).json(agendamentos);
     } catch (err) {
-      console.error("Erro ao executar a query:", err);
-      return response.status(500).json({ error: 'Erro ao buscar todos os agendamentos.' });
+        console.error("Erro ao executar a query:", err);
+        return response.status(500).json({ error: 'Erro ao buscar todos os agendamentos.' });
     }
-  }
+}
   // Método para buscar agendamento por ID
   async show({ params, response }) {
     try {
