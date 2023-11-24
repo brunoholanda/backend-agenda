@@ -6,6 +6,9 @@ const Route = use('Route')
 Route.group(() => {
   Route.post('register', 'AuthController.register')
   Route.post('login', 'AuthController.login')
+  Route.post('generate-temp-token', 'AuthController.generateTempToken')
+
+
 }).prefix('api/auth')
 
 // Rotas de Agendamento
@@ -37,7 +40,7 @@ Route.group(() => {
 
 // Rotas das empresas
 Route.group(() => {
-  Route.post('/companies', 'CompanyController.store').middleware(['auth']);
+  Route.post('/companies', 'CompanyController.store')
   Route.get('/companies', 'CompanyController.index').middleware(['auth']);
   Route.get('/companies/:company_id', 'CompanyController.show').middleware(['auth']);
   Route.put('/companies/:company_id', 'CompanyController.update').middleware(['auth']);
