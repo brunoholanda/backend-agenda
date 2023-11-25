@@ -7,8 +7,12 @@ Route.group(() => {
   Route.post('register', 'AuthController.register')
   Route.post('login', 'AuthController.login')
   Route.post('generate-temp-token', 'AuthController.generateTempToken')
+}).prefix('api/auth')
 
-
+// start/routes.js
+Route.group(() => {
+  Route.post('/password-reset', 'PasswordResetController.requestReset');
+  Route.post('/reset-password', 'PasswordResetController.resetPassword');
 }).prefix('api/auth')
 
 // Rotas de Agendamento

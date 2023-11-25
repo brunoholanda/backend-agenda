@@ -17,14 +17,14 @@ class CompanyController {
       const existingCompany = await Company.findBy('cnpj', companyData.cnpj);
       if (existingCompany) {
         await trx.rollback();
-        return response.status(409).json({ error: 'CNPJ já está em uso.' });
+        return response.status(409).json({ error: 'CNPJ já existe em nosso sistema !' });
       }
 
       // Verificar se o e-mail já está em uso como username
       const existingUser = await User.findBy('username', userData.email);
       if (existingUser) {
         await trx.rollback();
-        return response.status(409).json({ error: 'E-mail já está em uso.' });
+        return response.status(409).json({ error: 'E-mail já exite em nosso sistema !' });
       }
 
       const company = await Company.create(companyData, trx);
