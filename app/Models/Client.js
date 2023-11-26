@@ -3,8 +3,7 @@
 const Model = use('Model')
 
 class Client extends Model {
-    // Se você tiver timestamps (created_at e updated_at) em sua tabela, o Adonis os gerenciará automaticamente
-    // Caso contrário, você deve desabilitar os timestamps
+
     static get createdAtColumn() {
         return 'created_at'
     }
@@ -13,10 +12,12 @@ class Client extends Model {
         return 'updated_at'
     }
 
-    // Relacionamento com a tabela de agendamentos
-    appointments () {
-        // Assumindo que o modelo de agendamento é 'Appointment' e tem a chave estrangeira 'client_id'
+    appointments() {
         return this.hasMany('App/Models/Agendamento', 'id', 'client_id')
+    }
+
+    company() {
+        return this.belongsTo('App/Models/Company', 'company_id', 'company_id')
     }
 }
 

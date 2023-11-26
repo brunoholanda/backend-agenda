@@ -1,6 +1,7 @@
 'use strict'
 
 const Route = use('Route')
+const Helpers = use('Helpers');
 
 // Rotas de Autenticação
 Route.group(() => {
@@ -76,7 +77,17 @@ Route.group(() => {
   Route.delete('clients/:id', 'ClientsController.destroy').middleware(['auth']);
   Route.post('clients/:id/notes', 'ClientsController.addNotes').middleware(['auth']);
   Route.get('clients/:id/notes', 'ClientsController.getNotes').middleware(['auth']);
+}).prefix('api')
 
+Route.group(() => {
+  Route.post('/start-payment', 'PaymentController.startPayment');
+  Route.post('/payment-notification', 'PaymentController.paymentNotification');
+}).prefix('api')
+Route.group(() => {
+
+Route.get('/uploads/logos/:filename', async ({ params, response }) => {
+  return response.download(Helpers.publicPath(`uploads/logos/${params.filename}`));
+});
 }).prefix('api')
 
 Route.get('clients/cpf/:cpf', 'ClientsController.findByCpf').prefix('api')

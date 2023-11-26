@@ -5,6 +5,9 @@ const User = use('App/Models/User')
 const Hash = use('Hash')
 const Database = use('Database')
 const crypto = require('crypto');
+const fs = require('fs');
+const Helpers = use('Helpers');
+
 
 class CompanyController {
   async store({ request, response }) {
@@ -13,14 +16,12 @@ class CompanyController {
     const trx = await Database.beginTransaction();
 
     try {
-      // Verificar se o CNPJ já está em uso
       const existingCompany = await Company.findBy('cnpj', companyData.cnpj);
       if (existingCompany) {
         await trx.rollback();
         return response.status(409).json({ error: 'CNPJ já existe em nosso sistema !' });
       }
 
-      // Verificar se o e-mail já está em uso como username
       const existingUser = await User.findBy('username', userData.email);
       if (existingUser) {
         await trx.rollback();
@@ -67,7 +68,6 @@ class CompanyController {
     }
   }
 
-  // Método para mostrar uma empresa específica
   async show({ params, response }) {
     const company_id = params.company_id;
 
@@ -85,17 +85,43 @@ class CompanyController {
     }
   }
 
-  // Método para atualizar uma empresa
   async update({ params, request, response }) {
-
     const company_id = params.company_id;
     const data = request.only(['nome', 'cnpj', 'telefone', 'endereco']);
+
+    const logo = request.file('logo', {
+      types: ['image'],
+      size: '500kb'
+    });
 
     try {
       const company = await Company.find(company_id);
 
       if (!company) {
         return response.status(404).json({ error: 'Empresa para atualizar não encontrada.' });
+      }
+
+      // Verifica se existe uma logo antiga e a exclui
+      if (company.logo_path) {
+        const oldLogoPath = Helpers.publicPath(company.logo_path);
+        if (fs.existsSync(oldLogoPath)) {
+          fs.unlinkSync(oldLogoPath);
+        }
+      }
+
+      // Tratar upload da nova logo
+      if (logo) {
+        const logoFileName = `${new Date().getTime()}.${logo.subtype}`;
+        await logo.move('public/uploads/logos', {
+          name: logoFileName,
+          overwrite: true
+        });
+
+        if (!logo.moved()) {
+          return response.status(400).json({ error: logo.error() });
+        }
+
+        data.logo_path = `uploads/logos/${logoFileName}`;
       }
 
       company.merge(data);
@@ -109,7 +135,7 @@ class CompanyController {
   }
 
 
-  // Método para deletar uma empresa
+
   async destroy({ params, response }) {
     const company_id = params.company_id;
 
