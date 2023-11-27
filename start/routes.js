@@ -90,5 +90,11 @@ Route.get('/uploads/logos/:filename', async ({ params, response }) => {
 });
 }).prefix('api')
 
+Route.group(() => {
+Route.get('cid10', 'CidController.index').middleware(['auth']);
+Route.get('cid10/search', 'CidController.search').middleware(['auth']);
+
+}).prefix('api')
+
 Route.get('clients/cpf/:cpf', 'ClientsController.findByCpf').prefix('api')
 

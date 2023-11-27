@@ -87,7 +87,7 @@ class CompanyController {
 
   async update({ params, request, response }) {
     const company_id = params.company_id;
-    const data = request.only(['nome', 'cnpj', 'telefone', 'endereco']);
+    const data = request.only(['nome', 'cnpj', 'telefone', 'endereco', 'instagram']);
 
     const logo = request.file('logo', {
       types: ['image'],
@@ -96,21 +96,20 @@ class CompanyController {
 
     try {
       const company = await Company.find(company_id);
-
       if (!company) {
         return response.status(404).json({ error: 'Empresa para atualizar não encontrada.' });
       }
 
-      // Verifica se existe uma logo antiga e a exclui
-      if (company.logo_path) {
-        const oldLogoPath = Helpers.publicPath(company.logo_path);
-        if (fs.existsSync(oldLogoPath)) {
-          fs.unlinkSync(oldLogoPath);
-        }
-      }
-
-      // Tratar upload da nova logo
       if (logo) {
+        // Excluir a logo antiga apenas se uma nova logo for enviada
+        if (company.logo_path) {
+          const oldLogoPath = Helpers.publicPath(company.logo_path);
+          if (fs.existsSync(oldLogoPath)) {
+            fs.unlinkSync(oldLogoPath);
+          }
+        }
+
+        // Tratar upload da nova logo
         const logoFileName = `${new Date().getTime()}.${logo.subtype}`;
         await logo.move('public/uploads/logos', {
           name: logoFileName,
@@ -133,6 +132,7 @@ class CompanyController {
       return response.status(500).json({ error: 'Erro ao atualizar empresa.' });
     }
   }
+
 
 
 
