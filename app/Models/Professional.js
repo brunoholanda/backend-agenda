@@ -3,12 +3,10 @@
 const Model = use('Model')
 
 class Professional extends Model {
-  // Opcional: Definir a tabela que este modelo irá utilizar
   static get table() {
     return 'professionals'
   }
 
-  // Opcional: Definir como o Adonis trata os campos de data (created_at e updated_at)
   static get createdAtColumn() {
     return null
   }
@@ -17,12 +15,15 @@ class Professional extends Model {
     return null
   }
 
-  // Relacionamento com a tabela 'companies' (se houver)
   company() {
     return this.belongsTo('App/Models/Company', 'company_id', 'company_id')
   }
 
-  // Outros métodos e lógica do modelo podem ser adicionados aqui
+  planosMedicos() {
+    return this.belongsToMany('App/Models/PlanoMedico')
+      .pivotTable('profissional_planos')
+      .withTimestamps();
+  }
 }
 
 module.exports = Professional

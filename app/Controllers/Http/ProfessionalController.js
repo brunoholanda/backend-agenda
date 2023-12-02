@@ -8,22 +8,38 @@ class ProfessionalController {
   // Método para criar um profissional
 
   async store({ request, response }) {
-    const data = request.only([
+    const professionalData = request.only([
       'nome', 'cpf', 'data_de_nascimento', 'registro_profissional', 'celular',
       'assinatura', 'cep', 'endereco', 'numero', 'referencia',
       'cidade', 'estado', 'titulo', 'company_id', 'login'
     ]);
 
     const senha = request.input('senha');
+    const planosSaudeIds = request.input('profissional_plano', []); // IDs dos planos de saúde
+
+    // Iniciar transação
+    const trx = await Database.beginTransaction();
 
     try {
       // Aplicar hash à senha
       const hashedSenha = await Hash.make(senha);
 
-      // Criar profissional com a senha hashed
-      const professional = await Professional.create({ ...data, senha: hashedSenha });
+      // Criar profissional com a senha hashed e os outros dados
+      const professional = await Professional.create({ ...professionalData, senha: hashedSenha }, trx);
+
+      // Se IDs de planos de saúde foram fornecidos, associá-los ao profissional
+      if (planosSaudeIds.length > 0) {
+        await professional.planosMedicos().attach(planosSaudeIds, null, trx);
+      }
+
+      // Se tudo correu bem, confirma as operações de banco de dados
+      await trx.commit();
+
       return response.status(201).json(professional);
     } catch (error) {
+      // Se algo deu errado, desfazer as operações de banco de dados
+      await trx.rollback();
+
       console.error("Erro ao inserir profissional no banco de dados:", error);
       return response.status(500).json({ error: 'Erro ao inserir profissional no banco de dados.' });
     }

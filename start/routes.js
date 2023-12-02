@@ -85,16 +85,27 @@ Route.group(() => {
 }).prefix('api')
 Route.group(() => {
 
-Route.get('/uploads/logos/:filename', async ({ params, response }) => {
-  return response.download(Helpers.publicPath(`uploads/logos/${params.filename}`));
-});
+  Route.get('/uploads/logos/:filename', async ({ params, response }) => {
+    return response.download(Helpers.publicPath(`uploads/logos/${params.filename}`));
+  });
 }).prefix('api')
 
 Route.group(() => {
-Route.get('cid10', 'CidController.index').middleware(['auth']);
-Route.get('cid10/search', 'CidController.search').middleware(['auth']);
+  Route.get('cid10', 'CidController.index').middleware(['auth']);
+  Route.get('cid10/search', 'CidController.search').middleware(['auth']);
 
 }).prefix('api')
+
+'use strict'
+
+Route.group(() => {
+  Route.get('planos_medicos', 'PlanoMedicoController.index')
+  Route.post('planos_medicos', 'PlanoMedicoController.store')
+  Route.get('professionals/:id/planos', 'ProfessionalPlanoMedicoController.index')
+  Route.post('professionals/:professional_id/planos', 'ProfessionalPlanoMedicoController.store')
+  Route.delete('professionals/:professional_id/planos', 'ProfessionalPlanoMedicoController.destroy')
+}).prefix('api')
+
 
 Route.get('clients/cpf/:cpf', 'ClientsController.findByCpf').prefix('api')
 

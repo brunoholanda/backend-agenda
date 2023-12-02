@@ -22,26 +22,31 @@ class AgendamentoController {
   }
 
   async index({ request, response }) {
-    const { data, professional_id } = request.get();
+    const { data, professional_id, company_id } = request.get();  // Adicionando company_id
 
     try {
-      let query = Agendamento.query()
+      let query = Agendamento.query();
 
       if (data) {
-        query.where('data', data)
+        query.where('data', data);
       }
 
       if (professional_id) {
-        query.where('professional_id', professional_id)
+        query.where('professional_id', professional_id);
       }
 
-      const result = await query.fetch()
+      if (company_id) {
+        query.where('company_id', company_id);  // Filtrando por company_id
+      }
+
+      const result = await query.fetch();
       return response.status(200).json(result);
     } catch (err) {
       console.error("Erro ao executar a query:", err);
       return response.status(500).json({ error: 'Erro ao buscar os horários agendados.' });
     }
   }
+
 
   async all({ request, response, params }) {
     const { professional_id, client_id, company_id } = request.get();
