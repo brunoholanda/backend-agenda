@@ -104,6 +104,7 @@ Route.group(() => {
   Route.get('professionals/:id/planos', 'ProfessionalPlanoMedicoController.index')
   Route.post('professionals/:professional_id/planos', 'ProfessionalPlanoMedicoController.store')
   Route.delete('professionals/:professional_id/planos', 'ProfessionalPlanoMedicoController.destroy')
+  Route.get('professionals/check-login/:login', 'ProfessionalController.checkLogin');
 }).prefix('api')
 
 

@@ -3,7 +3,9 @@
 const Professional = use('App/Models/Professional')
 const Database = use('Database')
 const Hash = use('Hash')
-
+const DisabledDate = use('App/Models/DisabledDate');
+const Agendamento = use('App/Models/Agendamento');
+const Weekday = use('App/Models/Weekday');
 class ProfessionalController {
   // Método para criar um profissional
 
@@ -15,36 +17,35 @@ class ProfessionalController {
     ]);
 
     const senha = request.input('senha');
-    const planosSaudeIds = request.input('profissional_plano', []); // IDs dos planos de saúde
+    const planosSaudeIds = request.input('planosaude_id', []);
 
-    // Iniciar transação
     const trx = await Database.beginTransaction();
 
     try {
-      // Aplicar hash à senha
+      const existingProfessional = await Professional.findBy('login', professionalData.login);
+
+      if (existingProfessional) {
+        return response.status(400).json({ error: 'Nome de usuário não está disponível!' });
+      }
+
       const hashedSenha = await Hash.make(senha);
 
-      // Criar profissional com a senha hashed e os outros dados
       const professional = await Professional.create({ ...professionalData, senha: hashedSenha }, trx);
 
-      // Se IDs de planos de saúde foram fornecidos, associá-los ao profissional
       if (planosSaudeIds.length > 0) {
         await professional.planosMedicos().attach(planosSaudeIds, null, trx);
       }
 
-      // Se tudo correu bem, confirma as operações de banco de dados
       await trx.commit();
 
       return response.status(201).json(professional);
     } catch (error) {
-      // Se algo deu errado, desfazer as operações de banco de dados
       await trx.rollback();
 
       console.error("Erro ao inserir profissional no banco de dados:", error);
       return response.status(500).json({ error: 'Erro ao inserir profissional no banco de dados.' });
     }
   }
-
 
   // Método para listar profissionais
   async index({ request, response }) {
@@ -82,35 +83,43 @@ class ProfessionalController {
   }
 
   // Método para atualizar um profissional
-  async update({ params, request, response }) {
-    const id = params.id;
-    const data = request.only([
+  // Método para atualizar um profissional
+async update({ params, request, response }) {
+  const id = params.id;
+  const data = request.only([
       'nome', 'cpf', 'data_de_nascimento', 'registro_profissional', 'celular',
       'assinatura', 'cep', 'endereco', 'numero', 'referencia',
       'cidade', 'estado', 'titulo', 'company_id'
-    ]);
+  ]);
+  const planosSaudeIds = request.input('planosSaude', []); // IDs dos planos de saúde
 
-    try {
+  const trx = await Database.beginTransaction();
+
+  try {
       const professional = await Professional.find(id);
 
       if (!professional) {
-        return response.status(404).json({ message: 'Profissional não encontrado' });
+          return response.status(404).json({ message: 'Profissional não encontrado' });
       }
 
-      const senha = request.input('senha');
-      if (senha) {
-        // Aplicar hash à nova senha
-        professional.senha = await Hash.make(senha);
-      }
       professional.merge(data);
-      await professional.save();
+      await professional.save(trx);
 
+      await professional.planosMedicos().detach(null, trx);
+
+      if (planosSaudeIds.length > 0) {
+          await professional.planosMedicos().attach(planosSaudeIds, null, trx);
+      }
+
+      await trx.commit();
       return response.status(200).json({ message: 'Profissional atualizado com sucesso!' });
-    } catch (error) {
+  } catch (error) {
+      await trx.rollback();
       console.error('Erro ao tentar atualizar:', error);
       return response.status(500).json({ error: 'Erro ao atualizar profissional.' });
-    }
   }
+}
+
 
   // Método para deletar um profissional
   async destroy({ params, response }) {
@@ -123,6 +132,13 @@ class ProfessionalController {
         return response.status(404).json({ message: 'Profissional não encontrado' });
       }
 
+      // Excluir registros relacionados
+      await DisabledDate.query().where('professional_id', id).delete();
+      await Agendamento.query().where('professional_id', id).delete();
+      await Weekday.query().where('professional_id', id).delete();
+      await Database.table('profissional_planos').where('professional_id', id).delete();
+
+      // Excluir o profissional
       await professional.delete();
       return response.status(200).json({ message: 'Profissional deletado com sucesso!' });
     } catch (error) {
@@ -130,6 +146,22 @@ class ProfessionalController {
       return response.status(500).json({ error: 'Erro ao deletar profissional.' });
     }
   }
+
+
+  async checkLogin({ params, response }) {
+    try {
+      const existingProfessional = await Professional.findBy('login', params.login);
+      if (existingProfessional) {
+        return response.json({ existe: true });
+      } else {
+        return response.json({ existe: false });
+      }
+    } catch (error) {
+      console.error("Erro ao verificar login:", error);
+      return response.status(500).json({ error: 'Erro interno no servidor.' });
+    }
+  }
+
 
   async authenticate({ request, response }) {
     const { login, senha } = request.only(['login', 'senha']);
@@ -146,6 +178,7 @@ class ProfessionalController {
 
     return response.status(401).json({ autenticado: false, mensagem: 'Credenciais inválidas' });
   }
+
 
 }
 

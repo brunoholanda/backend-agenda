@@ -19,11 +19,12 @@ class Professional extends Model {
     return this.belongsTo('App/Models/Company', 'company_id', 'company_id')
   }
 
-  planosMedicos() {
-    return this.belongsToMany('App/Models/PlanoMedico')
-      .pivotTable('profissional_planos')
-      .withTimestamps();
-  }
+planosMedicos() {
+  return this.belongsToMany('App/Models/PlanoMedico', 'professional_id', 'planosaude_id', 'id', 'id')
+    .pivotTable('profissional_planos')
+}
+
+
 }
 
 module.exports = Professional
