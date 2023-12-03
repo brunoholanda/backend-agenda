@@ -107,6 +107,16 @@ Route.group(() => {
   Route.get('professionals/check-login/:login', 'ProfessionalController.checkLogin');
 }).prefix('api')
 
+Route.group(() => {
+Route.get('professional-intervals', 'ProfessionalIntervalController.index')
+Route.post('professional-intervals', 'ProfessionalIntervalController.store')
+Route.get('professional-intervals/:id', 'ProfessionalIntervalController.show')
+Route.put('professional-intervals/:id', 'ProfessionalIntervalController.update')
+Route.delete('professional-intervals/:id', 'ProfessionalIntervalController.destroy')
+Route.get('professional-intervals/professional/:professional_id', 'ProfessionalIntervalController.findByProfessionalId');
+
+}).prefix('api')
+
 
 Route.get('clients/cpf/:cpf', 'ClientsController.findByCpf').prefix('api')
 
