@@ -9,9 +9,11 @@ class ClientsController {
     return response.json(clients)
   }
 
-  async findByCpf({ params, response }) {
+  async findByCpf({ params, request, response }) {
+    const company_id = request.input('company_id'); // Extrai o company_id do objeto de consulta
     const client = await Client.query()
       .where('cpf', params.cpf)
+      .andWhere('company_id', company_id)
       .first();
 
     if (client) {
@@ -20,25 +22,30 @@ class ClientsController {
       return response.status(404).json({ message: 'Cliente não encontrado.' });
     }
   }
-  async store ({ request, response }) {
+
+  async store({ request, response }) {
     try {
-      const clientData = request.only(['nome', 'cpf', 'celular', 'data_nascimento', 'planodental', 'company_id'])
-      const clientExists = await Client.query()
+      const clientData = request.only(['nome', 'cpf', 'celular', 'data_nascimento', 'planodental', 'company_id']);
+
+      // Verifique se um cliente com o mesmo CPF e company_id já existe
+      const clientExists = await Client
+        .query()
         .where('cpf', clientData.cpf)
         .andWhere('company_id', clientData.company_id)
-        .first()
+        .first();
 
       if (clientExists) {
-        return response.status(400).send({ message: 'Cliente já cadastrado.' })
+        return response.status(400).send({ message: 'Cliente já cadastrado para essa empresa.' });
       }
 
-      const client = await Client.create(clientData)
-      return response.status(201).json(client)
+      // Se não existir, crie o cliente
+      const client = await Client.create(clientData);
+      return response.status(201).json(client);
     } catch (error) {
+      console.error('Erro ao criar cliente:', error);
       return response.status(500).send('Erro interno do servidor');
     }
   }
-
 
 
   async show ({ params, response }) {
