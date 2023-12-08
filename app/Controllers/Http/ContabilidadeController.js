@@ -52,6 +52,97 @@ async saldo({ auth, response }) {
     return response.status(201).json(contabilidade)
   }
 
+  async transacoesDoMes({ request, auth, response }) {
+    const { month, year } = request.get();
+    const user = await auth.getUser();
+
+    const totalReceitas = await Contabilidade
+      .query()
+      .where('company_id', user.company_id)
+      .whereRaw('extract(month from created_at) = ?', [month])
+      .whereRaw('extract(year from created_at) = ?', [year])
+      .sum('receita as total');
+
+    const totalDespesas = await Contabilidade
+      .query()
+      .where('company_id', user.company_id)
+      .whereRaw('extract(month from created_at) = ?', [month])
+      .whereRaw('extract(year from created_at) = ?', [year])
+      .sum('despesa as total');
+
+    return response.json({
+      totalReceitas: totalReceitas[0].total || 0,
+      totalDespesas: totalDespesas[0].total || 0
+    });
+  }
+
+  async lucroMensalDetalhado({ request, auth, response }) {
+    const year = request.input('year', new Date().getFullYear());
+    const user = await auth.getUser();
+    let resultadosMensais = [];
+
+    for (let month = 1; month <= 12; month++) {
+      const receitas = await Contabilidade.query()
+        .where('company_id', user.company_id)
+        .whereRaw('extract(month from created_at) = ?', [month])
+        .whereRaw('extract(year from created_at) = ?', [year])
+        .sum('receita as total')
+        .first();
+
+      const despesas = await Contabilidade.query()
+        .where('company_id', user.company_id)
+        .whereRaw('extract(month from created_at) = ?', [month])
+        .whereRaw('extract(year from created_at) = ?', [year])
+        .sum('despesa as total')
+        .first();
+
+      const lucro = (receitas.total || 0) - (despesas.total || 0);
+
+      resultadosMensais.push({
+        month,
+        year,
+        receita: receitas.total || 0,
+        despesa: despesas.total || 0,
+        lucro
+      });
+    }
+
+    return response.json(resultadosMensais);
+  }
+
+  async buscarTransacoes({ auth, response }) {
+    const user = await auth.getUser();
+    const transacoes = await Contabilidade.query()
+      .where('company_id', user.company_id)
+      .select('receita', 'descricao_receita', 'despesa', 'descricao_despesa', 'created_at') // Adicionado 'created_at'
+      .fetch();
+
+    return response.json(transacoes);
+  }
+
+
+async getTransactionsByMonthAndYear({ auth, request, response }) {
+  const user = await auth.getUser();
+  const { month, year } = request.get();
+
+  const startDate = new Date(year, month - 1, 1);
+  const endDate = new Date(year, month, 0);
+
+  try {
+    const transactions = await Contabilidade
+      .query()
+      .where('company_id', user.company_id) // Assegure-se que user.company_id é definido
+      .andWhereBetween('created_at', [startDate, endDate])
+      .fetch();
+
+    return response.json(transactions);
+  } catch (error) {
+    return response.status(500).json({ message: "Erro ao buscar as transações.", error: error.message });
+  }
+}
+
+
+
   async show({ params, response }) {
     const contabilidade = await Contabilidade.findOrFail(params.id)
     return response.json(contabilidade)

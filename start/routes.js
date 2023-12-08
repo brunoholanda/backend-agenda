@@ -129,6 +129,11 @@ Route.group(() => {
 
 Route.group(() => {
   Route.get('/contabilidades/saldo', 'ContabilidadeController.saldo').middleware(['auth']);
+  Route.get('/contabilidades/transacoes/mes', 'ContabilidadeController.transacoesDoMes').middleware(['auth']);
+  Route.get('/contabilidades/lucro-mensal-detalhado', 'ContabilidadeController.lucroMensalDetalhado').middleware(['auth']);
+  Route.get('/contabilidades/transacoes', 'ContabilidadeController.buscarTransacoes').middleware(['auth']);
+  Route.get('/contabilidades/transacoes/extrato', 'ContabilidadeController.getTransactionsByMonthAndYear').middleware(['auth'])
+
   Route.post('/contabilidades', 'ContabilidadeController.store').middleware(['auth']);
   Route.get('/contabilidades', 'ContabilidadeController.index').middleware(['auth']);
   Route.get('/contabilidades/:id', 'ContabilidadeController.show').middleware(['auth']);
