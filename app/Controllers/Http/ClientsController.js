@@ -4,9 +4,25 @@ const Client = use('App/Models/Client')
 
 class ClientsController {
   // Método para listar todos os clientes
-  async index ({ response }) {
-    const clients = await Client.all()
-    return response.json(clients)
+  async index ({ request, response }) {
+    const company_id = request.input('company_id');
+
+    // Verifica se o company_id foi fornecido
+    if (!company_id) {
+      return response.status(400).json({ message: 'ID da empresa não fornecido.' });
+    }
+
+    try {
+      const clients = await Client
+        .query()
+        .where('company_id', company_id)
+        .fetch();
+
+      return response.json(clients);
+    } catch (error) {
+      console.error('Erro ao buscar clientes:', error);
+      return response.status(500).send('Erro interno do servidor');
+    }
   }
 
 
@@ -30,9 +46,6 @@ class ClientsController {
       if (!searchTerm) {
           return response.status(400).json({ message: 'Termo de pesquisa não fornecido.' });
       }
-
-      // Adicionando log para monitorar as buscas
-      console.log(`Search Term: ${searchTerm}, Company ID: ${company_id}`);
 
       const query = Client.query()
           .where('company_id', company_id)

@@ -70,7 +70,7 @@ Route.group(() => {
 
 Route.group(() => {
   Route.get('clients/search', 'ClientsController.search').middleware(['auth']); // Esta linha deve vir primeiro
-  Route.get('clients', 'ClientsController.index').middleware(['auth']);
+  Route.get('clients', 'ClientsController.index')
   Route.post('clients', 'ClientsController.store')
   Route.get('clients/:id', 'ClientsController.show').middleware(['auth']);
   Route.put('clients/:id', 'ClientsController.update').middleware(['auth']);
@@ -110,12 +110,12 @@ Route.group(() => {
 }).prefix('api')
 
 Route.group(() => {
-Route.get('professional-intervals', 'ProfessionalIntervalController.index')
-Route.post('professional-intervals', 'ProfessionalIntervalController.store')
-Route.get('professional-intervals/:id', 'ProfessionalIntervalController.show')
-Route.put('professional-intervals/:id', 'ProfessionalIntervalController.update')
-Route.delete('professional-intervals/:id', 'ProfessionalIntervalController.destroy')
-Route.get('professional-intervals/professional/:professional_id', 'ProfessionalIntervalController.findByProfessionalId');
+  Route.get('professional-intervals', 'ProfessionalIntervalController.index')
+  Route.post('professional-intervals', 'ProfessionalIntervalController.store')
+  Route.get('professional-intervals/:id', 'ProfessionalIntervalController.show')
+  Route.put('professional-intervals/:id', 'ProfessionalIntervalController.update')
+  Route.delete('professional-intervals/:id', 'ProfessionalIntervalController.destroy')
+  Route.get('professional-intervals/professional/:professional_id', 'ProfessionalIntervalController.findByProfessionalId');
 }).prefix('api')
 
 Route.group(() => {
@@ -141,6 +141,13 @@ Route.group(() => {
   Route.delete('/contabilidades/:id', 'ContabilidadeController.destroy').middleware(['auth']);
 
 }).prefix('api')
+
+
+Route.group(() => {
+  Route.post('user-specialty/associate', 'UserSpecialtyController.associate')
+  Route.get('company-specialties', 'UserSpecialtyController.index')
+}).prefix('api')
+
 
 Route.get('clients/cpf/:cpf', 'ClientsController.findByCpf').prefix('api')
 

@@ -17,6 +17,10 @@ class User extends Model {
     return this.belongsTo('App/Models/Company')
   }
 
+  specialties() {
+    return this.belongsToMany('App/Models/Specialty', 'user_id', 'specialty_id', 'id', 'id').pivotTable('user_specialties')
+  }
+
   static get hidden () {
     return ['password'] // Esconder a senha nas consultas
   }}
