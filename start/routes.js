@@ -69,6 +69,7 @@ Route.group(() => {
 }).prefix('api')
 
 Route.group(() => {
+  Route.get('clients/search', 'ClientsController.search').middleware(['auth']); // Esta linha deve vir primeiro
   Route.get('clients', 'ClientsController.index').middleware(['auth']);
   Route.post('clients', 'ClientsController.store')
   Route.get('clients/:id', 'ClientsController.show').middleware(['auth']);
@@ -77,7 +78,8 @@ Route.group(() => {
   Route.delete('clients/:id', 'ClientsController.destroy').middleware(['auth']);
   Route.post('clients/:id/notes', 'ClientsController.addNotes').middleware(['auth']);
   Route.get('clients/:id/notes', 'ClientsController.getNotes').middleware(['auth']);
-}).prefix('api')
+}).prefix('api');
+
 
 Route.group(() => {
   Route.post('/start-payment', 'PaymentController.startPayment');
@@ -114,9 +116,26 @@ Route.get('professional-intervals/:id', 'ProfessionalIntervalController.show')
 Route.put('professional-intervals/:id', 'ProfessionalIntervalController.update')
 Route.delete('professional-intervals/:id', 'ProfessionalIntervalController.destroy')
 Route.get('professional-intervals/professional/:professional_id', 'ProfessionalIntervalController.findByProfessionalId');
-
 }).prefix('api')
 
+Route.group(() => {
+  Route.get('stock-items', 'StockItemController.index')
+  Route.post('stock-items', 'StockItemController.store')
+  Route.get('stock-items/:id', 'StockItemController.show')
+  Route.put('stock-items/:id', 'StockItemController.update')
+  Route.patch('stock-items/:id', 'StockItemController.update')
+  Route.delete('stock-items/:id', 'StockItemController.delete')
+}).prefix('api')
+
+Route.group(() => {
+  Route.get('/contabilidades/saldo', 'ContabilidadeController.saldo').middleware(['auth']);
+  Route.post('/contabilidades', 'ContabilidadeController.store').middleware(['auth']);
+  Route.get('/contabilidades', 'ContabilidadeController.index').middleware(['auth']);
+  Route.get('/contabilidades/:id', 'ContabilidadeController.show').middleware(['auth']);
+  Route.put('/contabilidades/:id', 'ContabilidadeController.update').middleware(['auth']);
+  Route.delete('/contabilidades/:id', 'ContabilidadeController.destroy').middleware(['auth']);
+
+}).prefix('api')
 
 Route.get('clients/cpf/:cpf', 'ClientsController.findByCpf').prefix('api')
 

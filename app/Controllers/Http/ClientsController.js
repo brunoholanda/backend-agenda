@@ -9,6 +9,7 @@ class ClientsController {
     return response.json(clients)
   }
 
+
   async findByCpf({ params, request, response }) {
     const company_id = request.input('company_id'); // Extrai o company_id do objeto de consulta
     const client = await Client.query()
@@ -22,6 +23,34 @@ class ClientsController {
       return response.status(404).json({ message: 'Cliente não encontrado.' });
     }
   }
+
+    // Função para realizar a pesquisa
+    async search({ request, response }) {
+      const { searchTerm, company_id } = request.get();
+      if (!searchTerm) {
+          return response.status(400).json({ message: 'Termo de pesquisa não fornecido.' });
+      }
+
+      // Adicionando log para monitorar as buscas
+      console.log(`Search Term: ${searchTerm}, Company ID: ${company_id}`);
+
+      const query = Client.query()
+          .where('company_id', company_id)
+          .andWhere(builder => {
+              builder.where('cpf', 'ILIKE', `%${searchTerm}%`)
+                     .orWhere('nome', 'ILIKE', `%${searchTerm}%`);
+          });
+
+          try {
+            const clients = await query.fetch();
+            return response.json(clients);
+        } catch (error) {
+            console.error('Erro na busca:', error);
+            // Adicionando log para ver o erro exato
+            response.status(500).send('Erro interno do servidor. Verifique os logs para mais detalhes.');
+        }
+  }
+
 
   async store({ request, response }) {
     try {
@@ -57,7 +86,7 @@ class ClientsController {
   }
 
   async update ({ params, request, response }) {
-    const clientInfo = request.only(['nome', 'celular', 'data_nascimento', 'plano_dental'])
+    const clientInfo = request.only(['nome', 'celular', 'data_nascimento', 'planodental'])
     const client = await Client.find(params.id)
     if (!client) {
       return response.status(404).send({ message: 'Cliente não encontrado.' })

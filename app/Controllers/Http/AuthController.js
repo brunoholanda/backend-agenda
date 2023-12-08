@@ -37,12 +37,9 @@ class AuthController {
 
 
   async register({ request, response }) {
-    console.log('Método register chamado');
 
     const { username, password, company_id } = request.only(['username', 'password', 'company_id'])
-    console.log('Dados recebidos:', { username, company_id }); // Debug
 
-    // Validação manual
     if (!username || !password || !company_id) {
       return response.status(400).send('Todos os campos são obrigatórios')
     }
