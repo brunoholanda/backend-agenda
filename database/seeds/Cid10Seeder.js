@@ -1582,7 +1582,6 @@ class Cid10Seeder {
       { code: 'D61.9', description: 'Anemia aplástica não especificada', descriptiontwo: null },
       { code: 'D62', description: '  Anemia aguda pós-hemorrágica', descriptiontwo: null },
       { code: 'D63.0', description: 'Anemia em neoplasias (C00-D48+)', descriptiontwo: null },
-      { code: 'G93.1', description: 'Lesão encefálica anóxica, não classificada em outra parte', descriptiontwo: '' },
       { code: 'D64.0', description: 'Anemia sideroblástica hereditária', descriptiontwo: null },
       { code: 'D64.1', description: 'Anemia sideroblástica secundária a doença', descriptiontwo: null },
       { code: 'D64.2', description: 'Anemia sideroblástica secundária ao uso de drogas e a toxinas', descriptiontwo: null },
