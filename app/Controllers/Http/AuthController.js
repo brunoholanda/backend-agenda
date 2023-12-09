@@ -5,6 +5,7 @@ const Company = use('App/Models/Company')
 const Hash = use('Hash')
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
+const UserSpecialty = use('App/Models/UserSpecialty')
 
 class AuthController {
 
@@ -12,14 +13,12 @@ class AuthController {
     const { email } = request.post();
 
     try {
-      // Verifique se o email existe na base de dados (você pode personalizar essa lógica)
       const user = await User.findBy('username', email);
 
       if (!user) {
         return response.status(404).json({ error: 'Usuário não encontrado' });
       }
 
-      // Gere um token temporário usando JWT
       const expirationDate = new Date();
       expirationDate.setDate(expirationDate.getDate() + 7);
 
@@ -27,7 +26,6 @@ class AuthController {
         expiresIn: '7d', // Define a expiração para 7 dias
       });
 
-      // Retorne o token no response
       return response.status(200).json({ token });
     } catch (error) {
       console.error('Erro ao gerar o Token de Acesso Temporário:', error);
@@ -71,10 +69,7 @@ class AuthController {
   async login({ request, auth, response }) {
     const { username, password } = request.all();
 
-    console.log('Tentativa de login:', { username });
-
     if (!username || !password) {
-      console.log('Falta de dados de login:', { username, password });
       return response.status(400).send('Username e password são obrigatórios');
     }
 
@@ -84,42 +79,34 @@ class AuthController {
         .first();
 
       if (!user) {
-        console.log('Usuário não encontrado para:', username);
         return response.status(404).json({ message: 'Usuário não encontrado' });
       }
 
-      console.log('Usuário encontrado, verificando senha');
-      console.log('Senha fornecida:', password);
-      console.log('Senha armazenada:', user.password);
-
       const passwordVerified = await Hash.verify(password, user.password);
 
-      console.log('Resultado da verificação da senha:', passwordVerified);
 
       if (!passwordVerified) {
         console.log('Falha na verificação da senha para:', username);
         return response.status(400).json({ message: 'Credenciais inválidas' });
       }
-      console.log('Data e hora atual:', new Date());
-      console.log('Data de expiração do token:', user.token_expiration);
 
-      // Verifique se o usuário possui um token válido
-      if (!user.token || user.token_expiration <= new Date()) {
-        console.log('Token inválido ou expirado para:', username);
-        return response.status(401).json({ message: 'Token inválido ou expirado' });
-      }
-      // Verifique se o usuário possui um token válido
-      if (user.token_expiration && user.token_expiration <= new Date()) {
-        console.log('Token inválido ou expirado para:', username);
-        return response.status(401).json({ message: 'Token inválido ou expirado' });
-      }
+      // Busca das especialidades do usuário
+      const userSpecialties = await UserSpecialty
+        .query()
+        .where('user_id', user.id)
+        .pluck('specialty_id');
 
-      // Autentique o usuário
-      const token = await auth.attempt(username, password);
+      // Geração do token JWT incluindo as especialidades do usuário
+      const token = await auth.generate(user, {
+        user_id: user.id,
+        specialties: userSpecialties
+      });
 
+      // Inclusão das especialidades na resposta
       return response.json({
         token: token.token,
-        company_id: user.company_id
+        company_id: user.company_id,
+        user_specialties: userSpecialties
       });
     } catch (error) {
       console.error('Erro no login:', error);
