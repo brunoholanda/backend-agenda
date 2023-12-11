@@ -148,6 +148,10 @@ Route.group(() => {
   Route.get('company-specialties', 'UserSpecialtyController.index')
 }).prefix('api')
 
+Route.group(() => {
+
+  Route.post('logs_atestados', 'LogAtestadoController.store')
+}).prefix('api')
 
 Route.get('clients/cpf/:cpf', 'ClientsController.findByCpf').prefix('api')
 
