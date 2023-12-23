@@ -1,6 +1,7 @@
 # Dependencias
 
 npm install @adonisjs/mail
+npm install node-fetch@2
 
 
 # Adonis fullstack application

@@ -28,7 +28,14 @@
     "@adonisjs/session": "^1.0.27",
     "@adonisjs/shield": "^1.0.8",
     "@adonisjs/validator": "^5.1.0",
-    "pg": "^8.11.3"
+    "@mercadopago/sdk-react": "^0.0.16",
+    "axios": "^1.6.2",
+    "cors": "^2.8.5",
+    "mercadopago": "2.0.0",
+    "node-fetch": "^2.7.0",
+    "pg": "^8.11.3",
+    "qs": "^6.11.2",
+    "xml2js": "^0.6.2"
   },
   "autoload": {
     "App": "./app"

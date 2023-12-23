@@ -151,7 +151,16 @@ Route.group(() => {
 Route.group(() => {
 
   Route.post('logs_atestados', 'LogAtestadoController.store')
+  Route.get('logs_atestados/:id', 'LogAtestadoController.show');
+
 }).prefix('api')
 
 Route.get('clients/cpf/:cpf', 'ClientsController.findByCpf').prefix('api')
+
+Route.group(() => {
+Route.post('/payment', 'PaymentController.createPayment');
+Route.get('/sessao-pagseguro', 'PaymentController.getSessionId');
+Route.post('/create_preference', 'PaymentController.createPreference');
+Route.post('/process_payment', 'PaymentController.processPayment');
+}).prefix('api')
 
