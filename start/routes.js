@@ -152,6 +152,7 @@ Route.group(() => {
 
   Route.post('logs_atestados', 'LogAtestadoController.store')
   Route.get('logs_atestados/:id', 'LogAtestadoController.show');
+  Route.get('services', 'ServiceController.index')
 
 }).prefix('api')
 

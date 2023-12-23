@@ -1,0 +1,34 @@
+const Service = use('App/Models/Service')
+
+class ServiceSeeder {
+  async run () {
+    await Service.createMany([
+      {
+        plan: 'Plus',
+        price: 69.99,
+        originalPrice: 119,
+        persons: 1,
+        duration: 12,
+        mostSold: true
+      },
+      {
+        plan: 'Pro',
+        price: 99.99,
+        originalPrice: 159,
+        persons: 5,
+        duration: 12,
+        mostSold: false
+      },
+      {
+        plan: 'Premium',
+        price: 189.99,
+        originalPrice: 299,
+        persons: 10,
+        duration: 12,
+        mostSold: false
+      }
+    ])
+  }
+}
+
+module.exports = ServiceSeeder
