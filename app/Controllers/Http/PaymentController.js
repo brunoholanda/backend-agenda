@@ -1,19 +1,35 @@
 const { MercadoPagoConfig, Payment } = require('mercadopago');
+const mercadopago = require('mercadopago');
+
 const Env = use('Env');
 class PaymentController {
- async createPreference({ request, response }) {
-    // Aqui você pode adaptar os dados da preferência conforme necessário
+
+  constructor() {
+    mercadopago.configure({
+      access_token: Env.get('TOKEN_PG_PROD')
+    });
+  }
+
+  async createPreference({ request, response }) {
+    const { itemDetails } = request.only(['itemDetails']);
+
+    // Converta unit_price para número
+    itemDetails.unit_price = parseFloat(itemDetails.unit_price);
+    if (isNaN(itemDetails.unit_price)) {
+      return response.status(400).send({ error: 'Preço unitário inválido' });
+    }
+
     let preference = {
       items: [
         {
           id: 'item-ID-1234',
-          title: 'Meu produto',
+          title: itemDetails.title,
           currency_id: 'BRL',
           picture_url: 'https://www.mercadopago.com/org-img/MP3/home/logomp3.gif',
-          description: 'Descrição do Item',
+          description: itemDetails.description,
           category_id: 'art',
           quantity: 1,
-          unit_price: 75.76
+          unit_price: itemDetails.unit_price
         }
       ],
     };
@@ -38,7 +54,7 @@ class PaymentController {
           token: request.input('token'),
           description: request.input('description'),
           installments: request.input('installments'),
-          payment_method_id: request.input('paymentMethodId'),
+          payment_method_id: request.input('payment_method_id'),
           issuer_id: request.input('issuer'),
           payer: {
             email: request.input('email'),

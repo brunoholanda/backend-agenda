@@ -7,6 +7,7 @@ class ServiceSeeder {
         plan: 'Plus',
         price: 69.99,
         originalPrice: 119,
+        anualPrice: 699.90,
         persons: 1,
         duration: 12,
         mostSold: true
@@ -15,6 +16,7 @@ class ServiceSeeder {
         plan: 'Pro',
         price: 99.99,
         originalPrice: 159,
+        anualPrice: 999.90,
         persons: 5,
         duration: 12,
         mostSold: false
@@ -23,6 +25,7 @@ class ServiceSeeder {
         plan: 'Premium',
         price: 189.99,
         originalPrice: 299,
+        anualPrice: 1899.90,
         persons: 10,
         duration: 12,
         mostSold: false

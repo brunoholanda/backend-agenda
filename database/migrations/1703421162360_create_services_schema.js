@@ -9,6 +9,7 @@ class ServicesSchema extends Schema {
       table.string('plan').notNullable()
       table.decimal('price', 10, 2).notNullable()
       table.decimal('originalPrice', 10, 2)
+      table.decimal('anualPrice', 10, 2)
       table.integer('persons').notNullable()
       table.integer('duration').notNullable() // considere em meses
       table.boolean('mostSold').defaultTo(false)

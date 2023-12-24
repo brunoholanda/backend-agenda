@@ -31,7 +31,7 @@
     "@mercadopago/sdk-react": "^0.0.16",
     "axios": "^1.6.2",
     "cors": "^2.8.5",
-    "mercadopago": "2.0.0",
+    "mercadopago": "1.5.17",
     "node-fetch": "^2.7.0",
     "pg": "^8.11.3",
     "qs": "^6.11.2",
