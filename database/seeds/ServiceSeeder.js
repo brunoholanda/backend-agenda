@@ -29,6 +29,15 @@ class ServiceSeeder {
         persons: 10,
         duration: 12,
         mostSold: false
+      },
+      {
+        plan: 'Plano Teste',
+        price: 0,
+        originalPrice: 0,
+        anualPrice: 0,
+        persons: 1,
+        duration: 12,
+        mostSold: false
       }
     ])
   }

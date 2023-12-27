@@ -90,6 +90,11 @@ class AuthController {
         return response.status(400).json({ message: 'Credenciais inválidas' });
       }
 
+      const tokenExpired = new Date() > new Date(user.token_expiration);
+      if (tokenExpired) {
+        return response.status(401).json({ message: 'Token inválido ou expirado' });
+      }
+
       // Busca das especialidades do usuário
       const userSpecialties = await UserSpecialty
         .query()

@@ -28,6 +28,8 @@ class CompanyController {
         return response.status(409).json({ error: 'E-mail já exite em nosso sistema !' });
       }
 
+      companyData.service_id = companyData.service_id || 4; // Default to 7 if not provided
+
       const company = await Company.create(companyData, trx);
 
       const token = crypto.randomBytes(16).toString('hex');
@@ -87,7 +89,7 @@ class CompanyController {
 
   async update({ params, request, response }) {
     const company_id = params.company_id;
-    const data = request.only(['nome', 'cnpj', 'telefone', 'endereco', 'instagram']);
+    const data = request.only(['nome', 'cnpj', 'telefone', 'endereco', 'instagram', 'service_id']);
 
     const logo = request.file('logo', {
       types: ['image'],
