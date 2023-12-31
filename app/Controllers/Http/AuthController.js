@@ -119,6 +119,23 @@ class AuthController {
     }
   }
 
+  async checkEmail({ request, response }) {
+    const { username } = request.only(['username']);
+
+    try {
+      const user = await User.findBy('username', username);
+
+      if (user) {
+        return response.json({ exists: true });
+      } else {
+        return response.json({ exists: false });
+      }
+    } catch (error) {
+      console.error("Error checking username:", error);
+      return response.status(500).json({ message: 'Error checking username', error });
+    }
+  }
+
 
 }
 

@@ -59,6 +59,33 @@ class CompanyController {
     }
   }
 
+  async updatePaymentInfo({ auth, request, response }) {
+    const { payment_type, payment_email, payment_confirm } = request.post();
+
+    try {
+      // Usando o auth para obter o usuário autenticado
+      const user = auth.user;
+      const company = await Company.find(user.company_id);
+
+      if (!company) {
+        return response.status(404).json({ error: 'Empresa não encontrada.' });
+      }
+
+      // Atualizando a empresa com novos dados de pagamento
+      company.merge({
+        payment_type,
+        payment_confirm,
+        // Se você deseja atualizar o service_id, adicione-o aqui também
+      });
+      await company.save();
+
+      return response.status(200).json({ message: 'Informações de pagamento atualizadas com sucesso!', company });
+    } catch (error) {
+      console.error('Erro ao atualizar informações de pagamento:', error);
+      return response.status(500).json({ error: 'Erro interno ao atualizar informações de pagamento.' });
+    }
+  }
+
 
   async index({ response }) {
     try {
@@ -134,8 +161,6 @@ class CompanyController {
       return response.status(500).json({ error: 'Erro ao atualizar empresa.' });
     }
   }
-
-
 
 
   async destroy({ params, response }) {

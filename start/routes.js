@@ -8,6 +8,7 @@ Route.group(() => {
   Route.post('register', 'AuthController.register')
   Route.post('login', 'AuthController.login')
   Route.post('generate-temp-token', 'AuthController.generateTempToken')
+  Route.post('check-email', 'AuthController.checkEmail')
 }).prefix('api/auth')
 
 // start/routes.js
@@ -50,6 +51,7 @@ Route.group(() => {
   Route.get('/companies/:company_id', 'CompanyController.show').middleware(['auth']);
   Route.put('/companies/:company_id', 'CompanyController.update').middleware(['auth']);
   Route.delete('/companies/:company_id', 'CompanyController.destroy').middleware(['auth']);
+  Route.post('/companies/updatePaymentInfo', 'CompanyController.updatePaymentInfo').middleware(['auth']);
 }).prefix('api')
 
 
@@ -165,5 +167,7 @@ Route.post('/payment', 'PaymentController.createPayment');
 Route.get('/sessao-pagseguro', 'PaymentController.getSessionId');
 Route.post('/create_preference', 'PaymentController.createPreference');
 Route.post('/process_payment', 'PaymentController.processPayment');
+Route.post('/monthly_payment', 'PaymentController.createMonthlySubscription');
+
 }).prefix('api')
 
