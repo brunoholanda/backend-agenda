@@ -60,7 +60,7 @@ class CompanyController {
   }
 
   async updatePaymentInfo({ auth, request, response }) {
-    const { payment_type, payment_email, payment_confirm } = request.post();
+    const { payment_type, payment_email, payment_confirm, service_id } = request.post();
 
     try {
       // Usando o auth para obter o usuário autenticado
@@ -71,11 +71,10 @@ class CompanyController {
         return response.status(404).json({ error: 'Empresa não encontrada.' });
       }
 
-      // Atualizando a empresa com novos dados de pagamento
       company.merge({
         payment_type,
         payment_confirm,
-        // Se você deseja atualizar o service_id, adicione-o aqui também
+        service_id,
       });
       await company.save();
 
