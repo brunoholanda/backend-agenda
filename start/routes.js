@@ -25,6 +25,8 @@ Route.group(() => {
   Route.put('/agendamentos/:id', 'AgendamentoController.update').middleware(['auth']);
   Route.get('/todos-agendamentos', 'AgendamentoController.all').middleware(['auth']);
   Route.get('/todos-agendamentos/:id', 'AgendamentoController.all').middleware(['auth']);
+  Route.get('chamados/:companyId', 'ChamadoController.index');
+  Route.post('recommendations', 'RecommendationController.store')
 
 }).prefix('api')
 
@@ -168,6 +170,7 @@ Route.get('/sessao-pagseguro', 'PaymentController.getSessionId');
 Route.post('/create_preference', 'PaymentController.createPreference');
 Route.post('/process_payment', 'PaymentController.processPayment');
 Route.post('/monthly_payment', 'PaymentController.createMonthlySubscription');
+Route.post('chamados', 'ChamadoController.store').middleware(['auth']);
 
 }).prefix('api')
 

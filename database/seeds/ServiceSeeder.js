@@ -10,7 +10,8 @@ class ServiceSeeder {
         anualPrice: 699.90,
         persons: 1,
         duration: 12,
-        mostSold: true
+        mostSold: true,
+        preapproval_plan_id: '2c9380848cb7771b018cc05762c20160',
       },
       {
         plan: 'Pro',
@@ -19,7 +20,9 @@ class ServiceSeeder {
         anualPrice: 999.90,
         persons: 5,
         duration: 12,
-        mostSold: false
+        mostSold: false,
+        preapproval_plan_id: '2c9380848cb7771b018cc058e3b50161',
+
       },
       {
         plan: 'Premium',
@@ -28,7 +31,9 @@ class ServiceSeeder {
         anualPrice: 1899.90,
         persons: 10,
         duration: 12,
-        mostSold: false
+        mostSold: false,
+        preapproval_plan_id: '2c9380848cb7774b018cc05934cf0195',
+
       },
       {
         plan: 'Plano Teste',
