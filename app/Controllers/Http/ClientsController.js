@@ -99,7 +99,7 @@ class ClientsController {
   }
 
   async update ({ params, request, response }) {
-    const clientInfo = request.only(['nome', 'celular', 'data_nascimento', 'planodental'])
+    const clientInfo = request.only(['nome', 'celular', 'data_nascimento', 'planodental', 'client_email'])
     const client = await Client.find(params.id)
     if (!client) {
       return response.status(404).send({ message: 'Cliente não encontrado.' })
