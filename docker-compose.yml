@@ -1,11 +1,12 @@
 version: '3.1'
 
 services:
-  postgres_hml:
+  postgres_dev:
     image: postgres
     restart: always
     environment:
       POSTGRES_PASSWORD: "@.3ZaJTY!z"
+      POSTGRES_DB: backendAgenda_dev
     volumes:
       - ./data_dev:/var/lib/postgresql/data
     ports:
@@ -16,6 +17,7 @@ services:
     restart: always
     environment:
       POSTGRES_PASSWORD: "PEjK@4H.M4"
+      POSTGRES_DB: backendAgenda_test
     volumes:
       - ./data_test:/var/lib/postgresql/data
     ports:
@@ -26,6 +28,7 @@ services:
     restart: always
     environment:
       POSTGRES_PASSWORD: "L88kfs8_gq"
+      POSTGRES_DB: backendAgenda_prod
     volumes:
       - ./data_prod:/var/lib/postgresql/data
     ports:
