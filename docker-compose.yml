@@ -12,7 +12,7 @@ services:
     ports:
       - "5432:5432"
 
-  postgres_test:
+  postgres_hml:
     image: postgres
     restart: always
     environment:
