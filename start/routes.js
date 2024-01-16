@@ -21,13 +21,13 @@ Route.group(() => {
 Route.group(() => {
   Route.post('/agendamentos', 'AgendamentoController.store')
   Route.get('/agendamentos', 'AgendamentoController.index').middleware(['auth']);
+  Route.get('/agendamentos/occupied-hours', 'AgendamentoController.occupiedHours')
   Route.get('/agendamentos/:id', 'AgendamentoController.show').middleware(['auth']);
   Route.put('/agendamentos/:id', 'AgendamentoController.update').middleware(['auth']);
   Route.get('/todos-agendamentos', 'AgendamentoController.all').middleware(['auth']);
   Route.get('/todos-agendamentos/:id', 'AgendamentoController.all').middleware(['auth']);
   Route.get('chamados/:companyId', 'ChamadoController.index');
   Route.post('recommendations', 'RecommendationController.store')
-
 }).prefix('api')
 
 // Rota de Teste (Considere remover ou proteger em produção)
