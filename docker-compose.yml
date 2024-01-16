@@ -2,34 +2,37 @@ version: '3.1'
 
 services:
   postgres_dev:
+    container_name: postgres_dev
     image: postgres
     restart: always
     environment:
       POSTGRES_PASSWORD: "@.3ZaJTY!z"
       POSTGRES_DB: backendAgenda_dev
     volumes:
-      - ./data_dev:/var/lib/postgresql/data
+      - /opt/data-conteners/data_dev:/var/lib/postgresql/data
     ports:
       - "5432:5432"
 
   postgres_hml:
+    container_name: postgres_hml
     image: postgres
     restart: always
     environment:
       POSTGRES_PASSWORD: "PEjK@4H.M4"
       POSTGRES_DB: backendAgenda_test
     volumes:
-      - ./data_test:/var/lib/postgresql/data
+      - /opt/data-conteners/data_test:/var/lib/postgresql/data
     ports:
       - "5433:5432"
 
   postgres_prod:
+    container_name: postgres_prod
     image: postgres
     restart: always
     environment:
       POSTGRES_PASSWORD: "L88kfs8_gq"
       POSTGRES_DB: backendAgenda_prod
     volumes:
-      - ./data_prod:/var/lib/postgresql/data
+      - /opt/data-conteners/data_prod:/var/lib/postgresql/data
     ports:
       - "5434:5432"
