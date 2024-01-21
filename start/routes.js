@@ -174,3 +174,4 @@ Route.post('chamados', 'ChamadoController.store').middleware(['auth']);
 
 }).prefix('api')
 
+Route.post('/chatbot', 'ChatbotController.sendMessage');
