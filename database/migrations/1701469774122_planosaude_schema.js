@@ -58,7 +58,6 @@ class CreatePlanosaudeTableSchema extends Schema {
         ('Plan Assiste'),
         ('Promed Assistência Médica'),
         ('Saúde Beneficência Portuguesa'),
-        ('Saúde Bradesco'),
         ('São Bernardo Saúde'),
         ('Saúde Caixa'),
         ('São Francisco Saúde'),

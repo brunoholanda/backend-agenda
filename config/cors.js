@@ -1,7 +1,7 @@
 'use strict'
 
 module.exports = {
-  origin: 'marquei.com.br', // Ou '*' para permitir todas as origens (não seguro para produção)
+  origin: '*', // Ou '*' para permitir todas as origens (não seguro para produção)
   methods: ['GET', 'PUT', 'PATCH', 'POST', 'DELETE'],
   headers: true,
   exposeHeaders: false,

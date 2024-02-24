@@ -19,7 +19,7 @@ class CompanyController {
       const existingCompany = await Company.findBy('cnpj', companyData.cnpj);
       if (existingCompany) {
         await trx.rollback();
-        return response.status(409).json({ error: 'CNPJ já existe em nosso sistema !' });
+        return response.status(409).json({ error: 'Numero do Documento já existe em nosso sistema !' });
       }
 
       const existingUser = await User.findBy('username', userData.email);
