@@ -1,7 +1,9 @@
 'use strict'
 
+
 const Agendamento = use('App/Models/Agendamento')
 const Database = use('Database')
+const io = require("../../../start/socket");
 
 class AgendamentoController {
 
@@ -13,6 +15,7 @@ class AgendamentoController {
 
     try {
       const agendamento = await Agendamento.create({ ...data, professional_id: professionalIdValue });
+      io.to('calendar').emit('newAppointment', agendamento.toJSON());
 
       return response.status(200).json(agendamento);
     } catch (err) {
@@ -86,7 +89,6 @@ class AgendamentoController {
       if (company_id) {
         query.where('company_id', company_id);
       }
-      // Se um ID foi fornecido, filtre por esse ID
       if (id) {
         query.where('id', id);
       }
@@ -99,7 +101,6 @@ class AgendamentoController {
     }
   }
 
-  // Método para buscar agendamento por ID
   async show({ params, response }) {
     try {
       const agendamento = await Agendamento.find(params.id);
@@ -113,8 +114,6 @@ class AgendamentoController {
     }
   }
 
-  // Método para atualizar agendamento por ID
-  // AgendamentoController.js
   async update({ params, request, response }) {
     const id = params.id;
     const { data, horario, status, infoadicional } = request.post();

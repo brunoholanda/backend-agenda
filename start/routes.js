@@ -85,6 +85,10 @@ Route.group(() => {
   Route.post('/prontuarios', 'ProntuarioController.store').middleware(['auth']);
 }).prefix('api');
 
+Route.group(() => {
+  Route.get('clients/cpf/:cpf', 'ClientsController.findByCpf')
+}).prefix('api');
+
 
 Route.group(() => {
   Route.post('/start-payment', 'PaymentController.startPayment');
@@ -163,15 +167,14 @@ Route.group(() => {
 
 }).prefix('api')
 
-Route.get('clients/cpf/:cpf', 'ClientsController.findByCpf').prefix('api')
 
 Route.group(() => {
-Route.post('/payment', 'PaymentController.createPayment');
-Route.get('/sessao-pagseguro', 'PaymentController.getSessionId');
-Route.post('/create_preference', 'PaymentController.createPreference');
-Route.post('/process_payment', 'PaymentController.processPayment');
-Route.post('/monthly_payment', 'PaymentController.createMonthlySubscription');
-Route.post('chamados', 'ChamadoController.store').middleware(['auth']);
+  Route.post('/payment', 'PaymentController.createPayment');
+  Route.get('/sessao-pagseguro', 'PaymentController.getSessionId');
+  Route.post('/create_preference', 'PaymentController.createPreference');
+  Route.post('/process_payment', 'PaymentController.processPayment');
+  Route.post('/monthly_payment', 'PaymentController.createMonthlySubscription');
+  Route.post('chamados', 'ChamadoController.store').middleware(['auth']);
 
 }).prefix('api')
 
