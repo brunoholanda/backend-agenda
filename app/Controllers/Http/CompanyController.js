@@ -115,7 +115,7 @@ class CompanyController {
 
   async update({ params, request, response }) {
     const company_id = params.company_id;
-    const data = request.only(['nome', 'cnpj', 'telefone', 'endereco', 'instagram', 'service_id']);
+    const data = request.only(['nome', 'cnpj', 'telefone', 'endereco', 'instagram', 'service_id', 'payment_confirm', 'payment_type']);
 
     const logo = request.file('logo', {
       types: ['image'],

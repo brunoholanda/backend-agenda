@@ -4,7 +4,7 @@ const Server = use('Server')
 const httpServer = Server.getInstance()
 const io = require('socket.io')(httpServer, {
   cors: {
-    origin: "marquei.com.br",
+    origin: "*",
     methods: ["GET", "POST"],
     allowedHeaders: ["my-custom-header"],
     credentials: true
