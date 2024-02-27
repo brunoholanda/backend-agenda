@@ -80,8 +80,9 @@ Route.group(() => {
   Route.put('clients/:id', 'ClientsController.update').middleware(['auth']);
   Route.patch('clients/:id', 'ClientsController.update').middleware(['auth']);
   Route.delete('clients/:id', 'ClientsController.destroy').middleware(['auth']);
-  Route.post('clients/:id/notes', 'ClientsController.addNotes').middleware(['auth']);
-  Route.get('clients/:id/notes', 'ClientsController.getNotes').middleware(['auth']);
+  Route.post('/clients/:clientId/notes', 'ProntuarioController.store').middleware(['auth']);
+  Route.get('/clients/:clientId/notes', 'ProntuarioController.index').middleware(['auth']);
+  Route.post('/prontuarios', 'ProntuarioController.store').middleware(['auth']);
 }).prefix('api');
 
 

@@ -67,7 +67,7 @@ class ClientsController {
 
   async store({ request, response }) {
     try {
-      const clientData = request.only(['nome', 'cpf', 'celular', 'data_nascimento', 'planodental', 'company_id']);
+      const clientData = request.only(['nome', 'cpf', 'celular', 'data_nascimento', 'planodental', 'company_id', 'client_email']);
 
       // Verifique se um cliente com o mesmo CPF e company_id já existe
       const clientExists = await Client
