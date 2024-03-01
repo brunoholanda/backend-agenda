@@ -9,7 +9,7 @@ class AgendamentoController {
 
   // Método para criar um agendamento
   async store({ request, response }) {
-    const data = request.only(['nome', 'data', 'horario', 'motivo', 'cpf', 'celular', 'planodental', 'professional_id', 'client_id', 'company_id']);
+    const data = request.only(['nome', 'data', 'horario', 'motivo', 'cpf', 'celular', 'planodental', 'professional_id', 'client_id', 'company_id', 'end_time']);
 
     const professionalIdValue = data.professional_id ? parseInt(data.professional_id) : null;
 
@@ -134,6 +134,20 @@ class AgendamentoController {
     } catch (err) {
       console.error("Erro ao executar a query:", err);
       return response.status(500).json({ error: 'Erro ao atualizar o agendamento.' });
+    }
+  }
+
+  async destroy({ params, response }) {
+    try {
+      const agendamento = await Agendamento.find(params.id);
+      if (!agendamento) {
+          return response.status(404).json({ message: 'Agendamento não encontrado.' });
+      }
+
+      await agendamento.delete();
+      return response.status(200).json({ success: true, message: 'Agendamento excluído com sucesso.' });} catch (err) {
+      console.error("Erro ao tentar excluir o agendamento:", err);
+      return response.status(500).json({ error: 'Erro ao tentar excluir o agendamento.' });
     }
   }
 

@@ -28,6 +28,8 @@ Route.group(() => {
   Route.get('/todos-agendamentos/:id', 'AgendamentoController.all').middleware(['auth']);
   Route.get('chamados/:companyId', 'ChamadoController.index');
   Route.post('recommendations', 'RecommendationController.store')
+  Route.delete('agendamentos/:id', 'AgendamentoController.destroy').middleware(['auth']);
+
 }).prefix('api')
 
 // Rota de Teste (Considere remover ou proteger em produção)
