@@ -9,6 +9,7 @@ Route.group(() => {
   Route.post('login', 'AuthController.login')
   Route.post('generate-temp-token', 'AuthController.generateTempToken')
   Route.post('check-email', 'AuthController.checkEmail')
+  Route.get('company-log-details', 'AuthController.getCompanyInfo').middleware(['auth']);
 }).prefix('api/auth')
 
 // start/routes.js
@@ -56,6 +57,7 @@ Route.group(() => {
   Route.put('/companies/:company_id', 'CompanyController.update').middleware(['auth']);
   Route.delete('/companies/:company_id', 'CompanyController.destroy').middleware(['auth']);
   Route.post('/companies/updatePaymentInfo', 'CompanyController.updatePaymentInfo').middleware(['auth']);
+  Route.put('/companies/:company_id/updateTokenExpiration', 'CompanyController.updateTokenExpiration');
 }).prefix('api')
 
 

@@ -88,23 +88,47 @@ class CompanyController {
 
   async index({ response }) {
     try {
-      const companies = await Company.all();
-      return response.status(200).json(companies);
+      // Realizar uma consulta que junta as tabelas companies e users e agrega a informação necessária
+      const companiesWithLatestTokenExpiration = await Database
+        .from('companies')
+        .leftJoin('users', 'companies.company_id', 'users.company_id')
+        .select('companies.*')
+        .select(Database.raw('MAX(users.token_expiration) as token_expiration'))
+        .groupBy('companies.company_id');
+
+      return response.json(companiesWithLatestTokenExpiration);
     } catch (error) {
-      console.error("Erro ao obter empresas:", error);
-      return response.status(500).json({ error: 'Erro ao obter empresas.' });
+      console.error("Erro ao obter empresas com data de expiração do token:", error);
+      return response.status(500).json({ error: 'Erro ao obter empresas com data de expiração do token.' });
     }
   }
+
 
   async show({ params, response }) {
     const company_id = params.company_id;
 
     try {
+      // Encontrar a empresa pelo ID
       const company = await Company.find(company_id);
 
       if (!company) {
         return response.status(404).json({ error: 'Empresa não encontrada.' });
       }
+
+      // Encontrar a data de expiração do token mais recente para usuários dessa empresa
+      const tokenExpiration = await User
+        .query()
+        .where('company_id', company_id)
+        .orderBy('token_expiration', 'desc')
+        .first();
+
+      // Se não encontrar nenhum usuário, retornar a empresa sem a data de expiração do token
+      if (!tokenExpiration) {
+        return response.status(200).json(company);
+      }
+
+      // Adicionar a data de expiração do token aos dados da empresa
+      company.token_expiration = tokenExpiration.token_expiration;
 
       return response.status(200).json(company);
     } catch (error) {
@@ -179,6 +203,29 @@ class CompanyController {
       return response.status(500).json({ error: 'Erro ao deletar empresa.' });
     }
   }
+
+  async updateTokenExpiration({ params, request, response }) {
+    const { company_id } = params;
+    const { token_expiration } = request.only(['token_expiration']);
+
+    try {
+      const users = await User
+        .query()
+        .where('company_id', company_id)
+        .update({ token_expiration: new Date(token_expiration) });
+
+      if (users === 0) {
+        return response.status(404).json({ message: 'Nenhum usuário encontrado para essa empresa.' });
+      }
+
+      return response.status(200).json({ message: 'Data de expiração do token atualizada com sucesso.' });
+    } catch (error) {
+      console.error("Erro ao atualizar a data de expiração do token:", error);
+      return response.status(500).json({ error: 'Erro ao atualizar a data de expiração do token.' });
+    }
+  }
+
+
 }
 
 module.exports = CompanyController

@@ -136,6 +136,29 @@ class AuthController {
     }
   }
 
+  async getCompanyInfo({ auth, response }) {
+    try {
+      const user = await auth.getUser();
+      const company = await Company.find(user.company_id);
+
+      if (!company) {
+        return response.status(404).json({ message: 'Empresa não encontrada.' });
+      }
+
+      const userSpecialties = await UserSpecialty
+        .query()
+        .where('user_id', user.id)
+        .pluck('specialty_id');
+
+      return response.status(200).json({
+        ...company.toJSON(), // Espalha todos os detalhes da empresa na resposta
+        user_specialties: userSpecialties // Inclui as especialidades do usuário na resposta
+      });
+    } catch (error) {
+      console.error('Erro ao buscar detalhes da empresa:', error);
+      return response.status(500).json({ message: 'Erro ao buscar detalhes da empresa.', error });
+    }
+  }
 
 }
 
