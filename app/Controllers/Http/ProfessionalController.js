@@ -176,7 +176,7 @@ async update({ params, request, response }) {
       });
     }
 
-    return response.status(401).json({ autenticado: false, mensagem: 'Credenciais inválidas' });
+    return response.status(401).json({ autenticado: false, mensagem: 'Credenciais inválidas!' });
   }
 
 
