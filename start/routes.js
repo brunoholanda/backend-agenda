@@ -179,6 +179,7 @@ Route.group(() => {
   Route.post('/process_payment', 'PaymentController.processPayment');
   Route.post('/monthly_payment', 'PaymentController.createMonthlySubscription');
   Route.post('chamados', 'ChamadoController.store').middleware(['auth']);
+  Route.put('/chamados/:id', 'ChamadoController.update').middleware(['auth']);
 
 }).prefix('api')
 

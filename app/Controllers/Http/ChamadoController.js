@@ -43,6 +43,22 @@ class ChamadoController {
     }
   }
 
+  async update({ params, request, response }) {
+    const { id } = params;
+    const { status, answer } = request.only(['status', 'answer']);
+
+    const chamado = await Chamado.find(id);
+    if (!chamado) {
+      return response.status(404).json({ message: 'Chamado não encontrado' });
+    }
+
+    chamado.status = status;
+    chamado.answer = answer;
+    await chamado.save();
+
+    return response.status(200).json(chamado);
+  }
+
 }
 
 module.exports = ChamadoController
