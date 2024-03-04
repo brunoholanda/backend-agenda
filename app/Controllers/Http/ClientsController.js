@@ -67,7 +67,7 @@ class ClientsController {
 
   async store({ request, response }) {
     try {
-      const clientData = request.only(['nome', 'cpf', 'celular', 'data_nascimento', 'planodental', 'company_id', 'client_email']);
+      const clientData = request.only(['nome', 'cpf', 'celular', 'data_nascimento', 'planodental', 'company_id', 'client_email', 'carteira']);
 
       // Verifique se um cliente com o mesmo CPF e company_id já existe
       const clientExists = await Client
@@ -99,7 +99,7 @@ class ClientsController {
   }
 
   async update ({ params, request, response }) {
-    const clientInfo = request.only(['nome', 'celular', 'data_nascimento', 'planodental', 'client_email'])
+    const clientInfo = request.only(['nome', 'celular', 'data_nascimento', 'planodental', 'client_email', 'carteira'])
     const client = await Client.find(params.id)
     if (!client) {
       return response.status(404).send({ message: 'Cliente não encontrado.' })

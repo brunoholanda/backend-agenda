@@ -2,17 +2,38 @@
 
 const Chamado = use('App/Models/Chamado')
 const Company = use('App/Models/Company')
+const Helpers = use('Helpers')
 
 class ChamadoController {
-  async store ({ request, response }) {
+  async store({ request, response }) {
     const { type, description, companyId } = request.only(['type', 'description', 'companyId'])
 
     // Buscar o nome da empresa baseado no companyId
-    const company = await Company.findBy('company_id', companyId);
+    const company = await Company.findBy('company_id', companyId)
     if (!company) {
-      return response.status(404).json({message: "Empresa não encontrada"});
+      return response.status(404).json({ message: "Empresa não encontrada" })
     }
-    const companyName = company.nome;  // Substitua 'name' pelo campo correto do seu modelo de empresa
+    const companyName = company.nome
+
+    const imageUpload = request.file('image', {
+      types: ['image'],
+      size: '1mb'
+    })
+
+    let imagePath = null
+    if (imageUpload) {
+      const fileName = `${new Date().getTime()}.${imageUpload.subtype}`
+
+      await imageUpload.move(Helpers.publicPath('uploads/chamados'), {
+        name: fileName
+      })
+
+      if (!imageUpload.moved()) {
+        return response.status(400).json({ message: imageUpload.error() })
+      }
+
+      imagePath = `/uploads/chamados/${fileName}`
+    }
 
     // Criar número do chamado
     const ticketNumber = `${new Date().toISOString().replace(/[^0-9]/g, '')}${companyId}`
@@ -23,7 +44,8 @@ class ChamadoController {
       type,
       description,
       company_id: companyId,
-      ticket_number: ticketNumber
+      ticket_number: ticketNumber,
+      image_path: imagePath // Caminho atualizado
     })
 
     return response.status(201).json(chamado)
@@ -59,6 +81,33 @@ class ChamadoController {
     return response.status(200).json(chamado);
   }
 
+  async deleteImage({ params, response }) {
+    const chamado = await Chamado.find(params.id);
+    if (!chamado) {
+        return response.status(404).json({ message: 'Chamado não encontrado.' });
+    }
+
+    if (!chamado.image_path) {
+        return response.status(400).json({ message: 'Nenhuma imagem para deletar.' });
+    }
+
+    const fs = require('fs').promises;
+    const path = require('path');
+
+    try {
+        const fullPath = Helpers.publicPath(chamado.image_path.substring(1));
+
+        await fs.unlink(fullPath);
+
+        chamado.image_path = null;
+        await chamado.save();
+
+        return response.status(200).json({ message: 'Imagem deletada com sucesso.' });
+    } catch (err) {
+        console.error(err);
+        return response.status(500).json({ message: 'Erro ao deletar a imagem.' });
+    }
+}
 }
 
 module.exports = ChamadoController

@@ -153,7 +153,6 @@ class CompanyController {
       }
 
       if (logo) {
-        // Excluir a logo antiga apenas se uma nova logo for enviada
         if (company.logo_path) {
           const oldLogoPath = Helpers.publicPath(company.logo_path);
           if (fs.existsSync(oldLogoPath)) {
@@ -161,7 +160,6 @@ class CompanyController {
           }
         }
 
-        // Tratar upload da nova logo
         const logoFileName = `${new Date().getTime()}.${logo.subtype}`;
         await logo.move('public/uploads/logos', {
           name: logoFileName,

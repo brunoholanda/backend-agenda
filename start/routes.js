@@ -28,10 +28,18 @@ Route.group(() => {
   Route.get('/todos-agendamentos', 'AgendamentoController.all').middleware(['auth']);
   Route.get('/todos-agendamentos/:id', 'AgendamentoController.all').middleware(['auth']);
   Route.get('chamados/:companyId', 'ChamadoController.index');
-  Route.post('recommendations', 'RecommendationController.store')
   Route.delete('agendamentos/:id', 'AgendamentoController.destroy').middleware(['auth']);
 
 }).prefix('api')
+
+Route.group(() => {
+  Route.post('recommendations', 'RecommendationController.store')
+  Route.post('/recommendations', 'RecommendationController.store')
+  Route.get('/recommendations/:companyId', 'RecommendationController.index')
+  Route.put('/recommendations/:id', 'RecommendationController.update')
+  Route.delete('/recommendations/:id', 'RecommendationController.destroy')
+}).prefix('api')
+
 
 // Rota de Teste (Considere remover ou proteger em produção)
 Route.get('test-db', 'TestDbConnectionController.index')
@@ -103,6 +111,13 @@ Route.group(() => {
   Route.get('/uploads/logos/:filename', async ({ params, response }) => {
     return response.download(Helpers.publicPath(`uploads/logos/${params.filename}`));
   });
+
+  Route.get('/uploads/chamados/:filename', async ({ params, response }) => {
+    return response.download(Helpers.publicPath(`uploads/chamados/${params.filename}`));
+  });
+
+  Route.delete('/chamados/:id/deleteImage', 'ChamadoController.deleteImage');
+
 }).prefix('api')
 
 Route.group(() => {

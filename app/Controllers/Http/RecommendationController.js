@@ -27,6 +27,39 @@ class RecommendationController {
 
     return response.status(201).json(recommendation)
   }
+
+  async index({ request, response }) {
+    const companyId = request.params.companyId;
+    const recommendations = await Recommendation.query()
+      .where('company_id', companyId)
+      .fetch();
+    return response.json(recommendations);
+  }
+
+  async update({ params, request, response }) {
+    const { status, motivo } = request.only(['status', 'motivo']);
+    const recommendation = await Recommendation.find(params.id);
+
+    if (!recommendation) {
+      return response.status(404).json({ message: "Recomendação não encontrada" });
+    }
+
+    recommendation.merge({ status, motivo });
+    await recommendation.save();
+
+    return response.json(recommendation);
+  }
+
+  async destroy({ params, response }) {
+    const recommendation = await Recommendation.find(params.id);
+
+    if (!recommendation) {
+      return response.status(404).json({ message: "Recomendação não encontrada" });
+    }
+
+    await recommendation.delete();
+    return response.status(204).json({});
+  }
 }
 
 module.exports = RecommendationController

@@ -42,10 +42,7 @@ module.exports = {
     processManually: [],
 
     filter: function (file) {
-      if (file.type !== 'image/png') {
-        return false;
-      }
-      return true;
+      return ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type);
     }
   }
 }
