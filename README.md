@@ -17,7 +17,7 @@ Siga os seguintes passos para configurar e executar o projeto:
 
 1. Execute o comando `npm i` para instalar as dependências do projeto.
 2. Instale o Adonis CLI globalmente com o comando `npm install -g @adonisjs/cli`.
-3. Instale o pacote `@adonisjs/mail` com o comando `npm install @adonisjs/mail`.
+3. Instale o pacote `@adonisjs/mail` com o comando `adonis install @adonisjs/mail`.
 3. Instale o pacote `@adonisjs/socket` com o comando `npm install socket.io`.
 4. Execute as migrações do banco de dados com o comando `adonis migration:run`.
 5. Execute as sementes do banco de dados com o comando `adonis seed`.

@@ -12,6 +12,10 @@ Route.group(() => {
   Route.get('company-log-details', 'AuthController.getCompanyInfo').middleware(['auth']);
 }).prefix('api/auth')
 
+Route.group(() => {
+  Route.post('/send-welcome-email', 'WelcomeEmailController.sendWelcomeEmail');
+}).prefix('api')
+
 // start/routes.js
 Route.group(() => {
   Route.post('/password-reset', 'PasswordResetController.requestReset');
