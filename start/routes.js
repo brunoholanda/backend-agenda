@@ -14,6 +14,7 @@ Route.group(() => {
 
 Route.group(() => {
   Route.post('/send-welcome-email', 'WelcomeEmailController.sendWelcomeEmail');
+  Route.post('/send-email', 'WelcomeEmailController.sendContactEmail');
 }).prefix('api')
 
 // start/routes.js
@@ -53,6 +54,7 @@ Route.get('test-db', 'TestDbConnectionController.index')
 Route.group(() => {
   Route.post('/professionals', 'ProfessionalController.store').middleware(['auth']);
   Route.get('/professionals', 'ProfessionalController.index').middleware(['auth']);
+  Route.get('/public-professionals', 'ProfessionalController.professionalByPublic')
   Route.get('/professionals/:id', 'ProfessionalController.show').middleware(['auth']);
   Route.put('/professionals/:id', 'ProfessionalController.update').middleware(['auth']);
   Route.delete('/professionals/:id', 'ProfessionalController.destroy').middleware(['auth']);
@@ -76,7 +78,7 @@ Route.group(() => {
 // Rotas das datas indisponiveis
 Route.group(() => {
   Route.post('/disabledDates', 'DisabledDateController.store').middleware(['auth']);
-  Route.get('/disabledDates', 'DisabledDateController.index').middleware(['auth']);
+  Route.get('/disabledDates', 'DisabledDateController.index')
   Route.delete('/disabledDates/:id', 'DisabledDateController.destroy').middleware(['auth']);
   Route.put('/disabledDates/:id', 'DisabledDateController.update').middleware(['auth']);
 }).prefix('api')
@@ -84,7 +86,7 @@ Route.group(() => {
 // Rotas das datas disponiveis
 Route.group(() => {
   Route.post('/dias-semanais', 'WeekdayController.store').middleware(['auth']);
-  Route.get('/dias-semanais', 'WeekdayController.index').middleware(['auth']);
+  Route.get('/dias-semanais', 'WeekdayController.index')
   Route.put('/dias-semanais/:id', 'WeekdayController.update').middleware(['auth']);
 }).prefix('api')
 

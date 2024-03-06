@@ -73,7 +73,6 @@ class PaymentController {
 
     // Tentar assinar o usuário ao plano existente
     try {
-      console.log("Subscribing to plan with data:", subscriptionData);
       const subscriptionResult = await mercadopago.preapproval.create(subscriptionData);
 
       // Retornar o resultado com o ID da assinatura
@@ -110,7 +109,6 @@ class PaymentController {
       });
       return response.json(result);
     } catch (error) {
-      console.log(error);
       return response.status(500).send('Erro ao processar pagamento.');
     }
   }

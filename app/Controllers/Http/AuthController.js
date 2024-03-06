@@ -57,9 +57,6 @@ class AuthController {
 
     try {
       const user = await User.create({ username, password, company_id })
-
-      console.log('Usuário criado:', user); // Debug
-
       return response.status(201).json(user)
     } catch (error) {
       console.error('Erro durante o registro:', error); // Log detalhado

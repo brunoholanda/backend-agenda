@@ -6,6 +6,10 @@ const Hash = use('Hash')
 const DisabledDate = use('App/Models/DisabledDate');
 const Agendamento = use('App/Models/Agendamento');
 const Weekday = use('App/Models/Weekday');
+const CryptoJS = require("crypto-js");
+const Env = use('Env');
+
+
 class ProfessionalController {
   // Método para criar um profissional
 
@@ -50,6 +54,8 @@ class ProfessionalController {
   // Método para listar profissionais
   async index({ request, response }) {
     const companyId = request.input('company_id');
+    const secretKey = Env.get('SECRET_KEY');
+
 
     if (!companyId) {
       return response.status(400).json({ error: 'O ID da empresa é necessário.' });
@@ -59,12 +65,48 @@ class ProfessionalController {
       const professionals = await Professional.query()
         .where('company_id', companyId)
         .fetch();
-      return response.status(200).json(professionals);
+
+      const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(professionals), secretKey).toString();
+
+      return response.status(200).send(encryptedData); // Enviando dados criptografados
     } catch (error) {
       console.error("Erro ao obter profissionais:", error);
       return response.status(500).json({ error: 'Erro ao obter profissionais.' });
     }
   }
+
+  async professionalByPublic({ request, response }) {
+    const companyId = request.input('company_id');
+
+    if (!companyId) {
+      return response.status(400).json({ error: 'O ID da empresa é necessário.' });
+    }
+
+    try {
+      const professionals = await Professional.query()
+        .where('company_id', companyId)
+        .fetch();
+
+      if (professionals.rows.length === 0) {
+        return response.status(404).json({ error: 'Não foram encontrados profissionais para o ID da empresa fornecido.' });
+      }
+
+      const filteredProfessionals = professionals.rows.map(professional => {
+        return {
+          id: professional.id,
+          nome: professional.nome,
+          company_id: professional.company_id
+        };
+      });
+
+      return response.status(200).json(filteredProfessionals);
+    } catch (error) {
+      console.error("Erro ao obter profissionais:", error);
+      return response.status(500).json({ error: 'Erro ao obter profissionais.' });
+    }
+  }
+
+
 
   // Método para mostrar um profissional específico
   async show({ params, response }) {

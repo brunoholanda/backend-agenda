@@ -15,6 +15,19 @@ class WelcomeEmailController {
       });
     }
   }
+
+  async sendContactEmail({ request }) {
+    const { name, email, message } = request.only(['name', 'email', 'message']);
+
+    await Mail.send('emails.contact', { name, message }, (message) => {
+      message
+        .to('contato@marquei.com.br')
+        .from(email)
+        .subject('Mensagem de Contato');
+    });
+  }
+
+
 }
 
 module.exports = WelcomeEmailController;
