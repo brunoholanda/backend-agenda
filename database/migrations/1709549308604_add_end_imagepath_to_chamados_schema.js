@@ -8,12 +8,13 @@ class AddImagePathToChamadosSchema extends Schema {
       table.text('image_path').nullable()
     })
   }
-
+/*
   down () {
     this.table('chamados', (table) => {
       table.dropColumn('image_path')
     })
   }
+  */
 }
 
 module.exports = AddImagePathToChamadosSchema

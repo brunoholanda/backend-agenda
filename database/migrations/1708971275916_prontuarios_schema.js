@@ -15,10 +15,11 @@ class ProntuariosSchema extends Schema {
       table.timestamps()
     })
   }
-
+/*
   down () {
     this.drop('prontuarios')
   }
+  */
 }
 
 module.exports = ProntuariosSchema

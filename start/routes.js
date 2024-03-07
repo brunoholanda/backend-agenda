@@ -15,7 +15,10 @@ Route.group(() => {
 Route.group(() => {
   Route.post('/send-welcome-email', 'WelcomeEmailController.sendWelcomeEmail');
   Route.post('/send-email', 'WelcomeEmailController.sendContactEmail');
+  Route.get('nps-systems', 'NpsSystemController.index')
+  Route.post('nps-systems', 'NpsSystemController.store')
 }).prefix('api')
+
 
 // start/routes.js
 Route.group(() => {

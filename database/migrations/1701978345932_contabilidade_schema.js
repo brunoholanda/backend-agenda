@@ -18,10 +18,11 @@ class ContabilidadeSchema extends Schema {
       table.timestamps()
     })
   }
-
+  /*
   down () {
     this.drop('contabilidades')
   }
+  */
 }
 
 module.exports = ContabilidadeSchema

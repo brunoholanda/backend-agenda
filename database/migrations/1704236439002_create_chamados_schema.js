@@ -17,9 +17,11 @@ class ChamadosSchema extends Schema {
     })
   }
 
+  /*
   down () {
     this.drop('chamados')
   }
+  */
 }
 
 module.exports = ChamadosSchema

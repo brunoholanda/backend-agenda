@@ -17,9 +17,11 @@ class ServicesSchema extends Schema {
     })
   }
 
+  /*
   down () {
     this.drop('services')
   }
+  */
 }
 
 module.exports = ServicesSchema

@@ -14,10 +14,11 @@ class RecommendationsSchema extends Schema {
       table.timestamps()
     })
   }
-
+/*
   down () {
     this.drop('recommendations')
   }
+  */
 }
 
 module.exports = RecommendationsSchema

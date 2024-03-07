@@ -8,12 +8,13 @@ class AddCarteiraToClientsSchema extends Schema {
       table.string('carteira').nullable()
     })
   }
-
+ /*
   down () {
     this.table('clients', (table) => {
       table.dropColumn('carteira')
     })
   }
+  */
 }
 
 module.exports = AddCarteiraToClientsSchema

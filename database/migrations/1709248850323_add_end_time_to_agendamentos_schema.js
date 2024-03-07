@@ -9,11 +9,13 @@ class AddEndTimeToAgendamentosSchema extends Schema {
     })
   }
 
+  /*
   down () {
     this.table('agendamentos', (table) => {
       table.dropColumn('end_time')
     })
   }
+  */
 }
 
 module.exports = AddEndTimeToAgendamentosSchema
