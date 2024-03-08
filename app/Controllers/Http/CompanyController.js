@@ -115,19 +115,16 @@ class CompanyController {
         return response.status(404).json({ error: 'Empresa não encontrada.' });
       }
 
-      // Encontrar a data de expiração do token mais recente para usuários dessa empresa
       const tokenExpiration = await User
         .query()
         .where('company_id', company_id)
         .orderBy('token_expiration', 'desc')
         .first();
 
-      // Se não encontrar nenhum usuário, retornar a empresa sem a data de expiração do token
       if (!tokenExpiration) {
         return response.status(200).json(company);
       }
 
-      // Adicionar a data de expiração do token aos dados da empresa
       company.token_expiration = tokenExpiration.token_expiration;
 
       return response.status(200).json(company);
@@ -223,6 +220,23 @@ class CompanyController {
     }
   }
 
+  async findCompanyNameById({ params, response }) {
+    try {
+      const company = await Company.query()
+        .where('company_id', params.company_id)
+        .select('nome')
+        .first();
+
+      if (!company) {
+        return response.status(404).json({ message: 'Empresa não encontrada.' });
+      }
+
+      return response.json({ nome: company.nome });
+    } catch (error) {
+      console.error("Erro ao buscar o nome da empresa:", error);
+      return response.status(500).json({ message: 'Erro interno do servidor ao buscar o nome da empresa.' });
+    }
+  }
 
 }
 

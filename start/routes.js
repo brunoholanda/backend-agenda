@@ -75,6 +75,7 @@ Route.group(() => {
   Route.delete('/companies/:company_id', 'CompanyController.destroy').middleware(['auth']);
   Route.post('/companies/updatePaymentInfo', 'CompanyController.updatePaymentInfo').middleware(['auth']);
   Route.put('/companies/:company_id/updateTokenExpiration', 'CompanyController.updateTokenExpiration');
+  Route.get('/companies-by-id/:company_id', 'CompanyController.findCompanyNameById');
 }).prefix('api')
 
 

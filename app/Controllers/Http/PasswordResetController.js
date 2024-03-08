@@ -4,7 +4,7 @@ const Hash = use('Hash');
 const { randomBytes } = require('crypto');
 const { promisify } = require('util');
 const Env = use('Env');
-
+const Company = use('App/Models/Company')
 
 class PasswordResetController {
   async requestReset({ request, response }) {
@@ -31,19 +31,31 @@ class PasswordResetController {
       const randomBytesPromisified = promisify(randomBytes);
       const token = (await randomBytesPromisified(20)).toString('hex');
       user.reset_token = token;
-      user.token_expires_at = new Date(Date.now() + 60 * 60 * 1000); // Token expires in 1 hour
+      user.token_expires_at = new Date(Date.now() + 60 * 60 * 1000);
       await user.save();
+
+      const company = await Company.find(user.company_id);
+      const companyName = company ? company.nome : 'Sua Empresa';
 
       const resetUrl = `https://marquei.com.br/#/reset-password/${token}`;
 
-      await Mail.send('emails.reset_password', { user, resetUrl }, (message) => {
-        message.to(user.username)
-               .from('contato@marquei.com.br')
-               .subject('Reiniciar Senha Marquei');
-      });
+      await Mail.send(
+        'emails.reset_password',
+        {
+          resetUrl,
+          companyName,
+          username: user.username
+        },
+        (message) => {
+          message
+            .to(user.username)
+            .from('contato@marquei.com.br')
+            .subject('Reiniciar Senha Marquei');
+        }
+      );
     }
 
-    return response.send({ message: 'If your email is registered, you will receive a password reset link.' });
+    return response.send({ message: 'Se o seu email estiver registrado, você receberá um link para redefinição de senha.' });
   }
 
   async resetPassword({ request, response }) {

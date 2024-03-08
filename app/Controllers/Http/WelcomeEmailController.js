@@ -19,13 +19,22 @@ class WelcomeEmailController {
   async sendContactEmail({ request }) {
     const { name, email, message } = request.only(['name', 'email', 'message']);
 
-    await Mail.send('emails.contact', { name, message }, (message) => {
+    await Mail.send('emails.contact', { name, email, message }, (message) => {
       message
         .to('contato@marquei.com.br')
-        .from(email)
+        .from('contato@marquei.com.br')
+        .replyTo(email)
         .subject('Mensagem de Contato');
     });
+
+    await Mail.send('emails.confirmation', { name }, (message) => {
+      message
+        .to(email)
+        .from('contato@marquei.com.br')
+        .subject('Confirmação de Recebimento - Marquei');
+    });
   }
+
 
 
 }
