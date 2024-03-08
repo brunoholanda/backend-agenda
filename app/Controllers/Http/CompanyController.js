@@ -60,7 +60,7 @@ class CompanyController {
   }
 
   async updatePaymentInfo({ auth, request, response }) {
-    const { payment_type, payment_email, payment_confirm, service_id } = request.post();
+    const { payment_type, payment_email, payment_confirm } = request.post();
 
     try {
       // Usando o auth para obter o usuário autenticado
@@ -74,7 +74,6 @@ class CompanyController {
       company.merge({
         payment_type,
         payment_confirm,
-        service_id,
       });
       await company.save();
 
