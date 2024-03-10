@@ -1,4 +1,3 @@
-// start/schedule.js
 const CronJob = require('node-cron');
 const Mail = use('Mail');
 const Database = use('Database');

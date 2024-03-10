@@ -60,10 +60,9 @@ class CompanyController {
   }
 
   async updatePaymentInfo({ auth, request, response }) {
-    const { payment_type, payment_email, payment_confirm } = request.post();
+    const { payment_type, payment_email } = request.post();
 
     try {
-      // Usando o auth para obter o usuário autenticado
       const user = auth.user;
       const company = await Company.find(user.company_id);
 
@@ -73,7 +72,6 @@ class CompanyController {
 
       company.merge({
         payment_type,
-        payment_confirm,
       });
       await company.save();
 
@@ -87,7 +85,6 @@ class CompanyController {
 
   async index({ response }) {
     try {
-      // Realizar uma consulta que junta as tabelas companies e users e agrega a informação necessária
       const companiesWithLatestTokenExpiration = await Database
         .from('companies')
         .leftJoin('users', 'companies.company_id', 'users.company_id')
