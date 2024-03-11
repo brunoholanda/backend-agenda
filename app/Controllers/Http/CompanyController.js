@@ -7,6 +7,7 @@ const Database = use('Database')
 const crypto = require('crypto');
 const fs = require('fs');
 const Helpers = use('Helpers');
+const Redis = use('Redis')
 
 
 class CompanyController {
@@ -48,7 +49,9 @@ class CompanyController {
       // Confirmar a transação
       await trx.commit();
 
-      // Responder com sucesso
+      const cacheKey = 'companies:index'; // A chave do cache que armazena a lista de todas as empresas
+      await Redis.del(cacheKey);
+
       return response.status(201).json({ company, user });
     } catch (error) {
       // Desfazer a transação em caso de erro
@@ -84,6 +87,13 @@ class CompanyController {
 
 
   async index({ response }) {
+    const cacheKey = 'companies:index';
+
+    const cached = await Redis.get(cacheKey);
+    if (cached) {
+      return response.json(JSON.parse(cached));
+    }
+
     try {
       const companiesWithLatestTokenExpiration = await Database
         .from('companies')
@@ -91,6 +101,8 @@ class CompanyController {
         .select('companies.*')
         .select(Database.raw('MAX(users.token_expiration) as token_expiration'))
         .groupBy('companies.company_id');
+
+      await Redis.set(cacheKey, JSON.stringify(companiesWithLatestTokenExpiration), 'EX', 600);
 
       return response.json(companiesWithLatestTokenExpiration);
     } catch (error) {
@@ -101,6 +113,14 @@ class CompanyController {
 
 
   async show({ params, response }) {
+    const cacheKey = `companies:show:${params.company_id}`;
+
+    // Tentar buscar do cache primeiro
+    const cached = await Redis.get(cacheKey);
+    if (cached) {
+      return response.json(JSON.parse(cached));
+    }
+
     const company_id = params.company_id;
 
     try {
@@ -122,6 +142,8 @@ class CompanyController {
       }
 
       company.token_expiration = tokenExpiration.token_expiration;
+
+      await Redis.set(cacheKey, JSON.stringify(company), 'EX', 600); // Exemplo: expira em 10 minutos
 
       return response.status(200).json(company);
     } catch (error) {
@@ -168,6 +190,9 @@ class CompanyController {
 
       company.merge(data);
       await company.save();
+
+      const cacheKey = `companies:show:${params.company_id}`;
+      await Redis.del(cacheKey);
 
       return response.status(200).json({ message: 'Empresa atualizada com sucesso!', company });
     } catch (error) {
