@@ -13,11 +13,11 @@ class CidController {
             if (cids) {
                 cids = JSON.parse(cids);  // Deserializa os dados do cache
             } else {
-                // Se não houver no cache, busca do banco e armazena no cache
-                const result = await Cid.all();
+
+              const result = await Cid.all();
                 cids = result.toJSON();
-                await Redis.set(cacheKey, JSON.stringify(cids), 'EX', 60 * 60); // Cache válido por 1 hora
-            }
+                await Redis.set(cacheKey, JSON.stringify(cids));
+              }
 
             return response.json(cids);
         } catch (error) {
@@ -40,8 +40,8 @@ class CidController {
                     .orWhere('code', 'LIKE', `%${query}%`)
                     .fetch();
                 results = results.toJSON();
-                await Redis.set(cacheKey, JSON.stringify(results), 'EX', 60 * 60); // Cache válido por 1 hora
-            }
+                await Redis.set(cacheKey, JSON.stringify(cids));
+              }
 
             return response.json(results);
         } catch (error) {
