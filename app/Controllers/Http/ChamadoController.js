@@ -35,10 +35,8 @@ class ChamadoController {
       imagePath = `/uploads/chamados/${fileName}`
     }
 
-    // Criar número do chamado
     const ticketNumber = `${new Date().toISOString().replace(/[^0-9]/g, '')}${companyId}`
 
-    // Criar o chamado
     const chamado = await Chamado.create({
       company_name: companyName,
       type,

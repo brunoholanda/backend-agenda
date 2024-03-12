@@ -40,7 +40,7 @@ class CidController {
                     .orWhere('code', 'LIKE', `%${query}%`)
                     .fetch();
                 results = results.toJSON();
-                await Redis.set(cacheKey, JSON.stringify(cids));
+                await Redis.set(cacheKey, JSON.stringify(results));
               }
 
             return response.json(results);

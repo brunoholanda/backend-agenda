@@ -87,6 +87,16 @@ Route.group(() => {
   Route.put('/disabledDates/:id', 'DisabledDateController.update').middleware(['auth']);
 }).prefix('api')
 
+// Rotas para PublicProfessionalController
+Route.group(() => {
+  Route.get('/publicProfessionals', 'PublicProfessionalController.index');
+  Route.post('/publicProfessionals', 'PublicProfessionalController.store').middleware(['auth']);
+  Route.get('publicProfessionals/professional/:professional_id', 'PublicProfessionalController.showByProfessionalId').middleware(['auth']);
+  Route.get('/publicProfessionals/:id', 'PublicProfessionalController.show');
+  Route.put('/publicProfessionals/:id', 'PublicProfessionalController.update').middleware(['auth']);
+  Route.delete('/publicProfessionals/:id', 'PublicProfessionalController.destroy').middleware(['auth']);
+}).prefix('api')
+
 // Rotas das datas disponiveis
 Route.group(() => {
   Route.post('/dias-semanais', 'WeekdayController.store').middleware(['auth']);
@@ -124,6 +134,10 @@ Route.group(() => {
 
   Route.get('/uploads/chamados/:filename', async ({ params, response }) => {
     return response.download(Helpers.publicPath(`uploads/chamados/${params.filename}`));
+  });
+
+  Route.get('/uploads/ProfileDoctor/:filename', async ({ params, response }) => {
+    return response.download(Helpers.publicPath(`uploads/ProfileDoctor/${params.filename}`));
   });
 
   Route.delete('/chamados/:id/deleteImage', 'ChamadoController.deleteImage');

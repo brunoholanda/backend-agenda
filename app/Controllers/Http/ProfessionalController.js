@@ -131,9 +131,9 @@ async update({ params, request, response }) {
   const data = request.only([
       'nome', 'cpf', 'data_de_nascimento', 'registro_profissional', 'celular',
       'assinatura', 'cep', 'endereco', 'numero', 'referencia',
-      'cidade', 'estado', 'titulo', 'company_id'
+      'cidade', 'estado', 'titulo', 'company_id', 'email', 'bairro'
   ]);
-  const planosSaudeIds = request.input('planosSaude', []); // IDs dos planos de saúde
+  const planosSaudeIds = request.input('planosSaude', []);
 
   const trx = await Database.beginTransaction();
 
