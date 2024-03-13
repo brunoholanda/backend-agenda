@@ -62,6 +62,7 @@ Route.group(() => {
   Route.put('/professionals/:id', 'ProfessionalController.update').middleware(['auth']);
   Route.delete('/professionals/:id', 'ProfessionalController.destroy').middleware(['auth']);
   Route.post('/professionals/authenticate', 'ProfessionalController.authenticate');
+  Route.get('/publicProfessionals/search', 'PublicProfessionalController.search');
 
 }).prefix('api')
 

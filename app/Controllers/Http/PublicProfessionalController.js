@@ -6,14 +6,29 @@ const fs = require('fs')
 const util = require('util'); // Necessário para promisificar funções
 const unlinkAsync = util.promisify(fs.unlink);
 class PublicProfessionalController {
-  async index({ response }) {
-    try {
-      const professionals = await PublicProfessional.all()
-      return response.json(professionals)
-    } catch (error) {
-      return response.status(500).json({ error: error.message })
-    }
+// Dentro do PublicProfessionalController
+async index({ request, response }) {
+  try {
+      const { especialidade, cidade } = request.get();
+
+      const query = PublicProfessional.query();
+
+      if (especialidade) {
+          query.where('especialidade', especialidade);
+      }
+
+      if (cidade) {
+          query.where('cidade', cidade);
+      }
+
+      const professionals = await query.fetch();
+
+      return response.json(professionals);
+  } catch (error) {
+      return response.status(500).json({ error: error.message });
   }
+}
+
 
   async store({ request, response }) {
     try {
@@ -52,7 +67,7 @@ class PublicProfessionalController {
         'nome', 'telefone', 'especialidade',
         'registro_profissional', 'titulo', 'planos_que_atende',
         'endereco', 'numero', 'bairro', 'cidade', 'uf', 'cep',
-        'instagram', 'email', 'professional_id'
+        'instagram', 'email', 'professional_id', 'atendimento'
       ]));
 
       await professional.save();
@@ -86,12 +101,12 @@ class PublicProfessionalController {
             'nome', 'telefone', 'email', 'especialidade',
             'registro_profissional', 'titulo', 'planos_que_atende',
             'endereco', 'numero', 'bairro', 'cidade', 'uf', 'cep',
-            'instagram' // Confirme se esse campo realmente deve ser incluído
+            'instagram', 'atendimento'
         ]);
 
         const profilePic = request.file('foto', {
             types: ['image'],
-            size: '2mb'
+            size: '1mb'
         });
 
         if (profilePic) {
@@ -143,6 +158,29 @@ class PublicProfessionalController {
       return response.status(500).json({ error: error.message });
     }
   }
+
+  async search({ request, response }) {
+    try {
+      const { especialidade, cidade } = request.get();
+
+      const query = PublicProfessional.query();
+
+      if (especialidade) {
+        query.where('especialidade', 'ILIKE', `%${especialidade}%`);
+      }
+
+      if (cidade) {
+        // 'ILIKE' para PostgreSQL
+        query.where('cidade', 'ILIKE', `%${cidade}%`);
+      }
+
+      const professionals = await query.fetch();
+      return response.json(professionals);
+    } catch (error) {
+      return response.status(500).json({ error: error.message });
+    }
+  }
+
 
   async destroy({ params, response }) {
     try {
