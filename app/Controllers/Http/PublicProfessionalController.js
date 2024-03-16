@@ -67,7 +67,7 @@ async index({ request, response }) {
         'nome', 'telefone', 'especialidade',
         'registro_profissional', 'titulo', 'planos_que_atende',
         'endereco', 'numero', 'bairro', 'cidade', 'uf', 'cep',
-        'instagram', 'email', 'professional_id', 'atendimento'
+        'instagram', 'email', 'professional_id', 'atendimento', 'company_id'
       ]));
 
       await professional.save();
@@ -101,7 +101,7 @@ async index({ request, response }) {
             'nome', 'telefone', 'email', 'especialidade',
             'registro_profissional', 'titulo', 'planos_que_atende',
             'endereco', 'numero', 'bairro', 'cidade', 'uf', 'cep',
-            'instagram', 'atendimento'
+            'instagram', 'atendimento', 'company_id'
         ]);
 
         const profilePic = request.file('foto', {
