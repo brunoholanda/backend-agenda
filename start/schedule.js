@@ -3,7 +3,7 @@ const Mail = use('Mail');
 const Database = use('Database');
 const moment = require('moment');
 
-CronJob.schedule('0 12 * * *', async () => {
+CronJob.schedule('0 0 * * *', async () => {
   console.log('Executando a tarefa cron...');
 
   const today = moment().format('DD/MM/YYYY');

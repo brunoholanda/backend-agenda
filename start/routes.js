@@ -36,7 +36,8 @@ Route.group(() => {
   Route.get('/agendamentos/:id', 'AgendamentoController.show').middleware(['auth']);
   Route.put('/agendamentos/:id', 'AgendamentoController.update').middleware(['auth']);
   Route.get('/todos-agendamentos', 'AgendamentoController.all').middleware(['auth']);
-  Route.get('/todos-agendamentos/:id', 'AgendamentoController.all').middleware(['auth']);
+  Route.get('/todos-agendamentos-hard', 'AgendamentoController.allCalendar').middleware(['auth']);
+  Route.get('/todos-agendamentos-hard/:id', 'AgendamentoController.allCalendar').middleware(['auth']);
   Route.get('chamados/:companyId', 'ChamadoController.index');
   Route.delete('agendamentos/:id', 'AgendamentoController.destroy').middleware(['auth']);
   Route.get('/confirma-agendamento/:id', 'AgendamentoController.showAgendamentoById');
@@ -110,7 +111,7 @@ Route.group(() => {
 
 Route.group(() => {
   Route.get('clients/search', 'ClientsController.search').middleware(['auth']); // Esta linha deve vir primeiro
-  Route.get('clients', 'ClientsController.index')
+  Route.get('clients', 'ClientsController.index').middleware(['auth']);
   Route.post('clients', 'ClientsController.store')
   Route.get('clients/:id', 'ClientsController.show').middleware(['auth']);
   Route.put('clients/:id', 'ClientsController.update').middleware(['auth']);

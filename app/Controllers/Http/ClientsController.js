@@ -5,7 +5,10 @@ const Helpers = use('Helpers')
 const fs = require('fs')
 
 class ClientsController {
+
   async index({ request, response }) {
+    const page = request.input('page', 1); // Assume a página 1 como padrão se nenhuma página for especificada
+    const limit = 10; // Número de resultados por página
     const company_id = request.input('company_id');
 
     if (!company_id) {
@@ -16,7 +19,7 @@ class ClientsController {
       const clients = await Client
         .query()
         .where('company_id', company_id)
-        .fetch();
+        .paginate(page, limit);
 
       return response.json(clients);
     } catch (error) {
@@ -24,6 +27,7 @@ class ClientsController {
       return response.status(500).send('Erro interno do servidor');
     }
   }
+
 
 
   async findByCpf({ params, request, response }) {

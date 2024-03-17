@@ -73,6 +73,37 @@ class AgendamentoController {
 
 
   async all({ request, response, params }) {
+    const { professional_id, client_id, company_id, page = 1, limit = 10 } = request.get();
+    const { id } = params;
+
+    try {
+      let query = Agendamento.query();
+
+      if (professional_id) {
+        query.where('professional_id', professional_id);
+      }
+
+      if (client_id) {
+        query.where('client_id', client_id);
+      }
+
+      if (company_id) {
+        query.where('company_id', company_id);
+      }
+
+      if (id) {
+        query.where('id', id);
+      }
+
+      const agendamentos = await query.paginate(page, limit);
+      return response.status(200).json(agendamentos);
+    } catch (err) {
+      console.error("Erro ao executar a query:", err);
+      return response.status(500).json({ error: 'Erro ao buscar todos os agendamentos.' });
+    }
+  }
+
+  async allCalendar({ request, response, params }) {
     const { professional_id, client_id, company_id } = request.get();
     const { id } = params;
 
@@ -143,11 +174,12 @@ class AgendamentoController {
     try {
       const agendamento = await Agendamento.find(params.id);
       if (!agendamento) {
-          return response.status(404).json({ message: 'Agendamento não encontrado.' });
+        return response.status(404).json({ message: 'Agendamento não encontrado.' });
       }
 
       await agendamento.delete();
-      return response.status(200).json({ success: true, message: 'Agendamento excluído com sucesso.' });} catch (err) {
+      return response.status(200).json({ success: true, message: 'Agendamento excluído com sucesso.' });
+    } catch (err) {
       console.error("Erro ao tentar excluir o agendamento:", err);
       return response.status(500).json({ error: 'Erro ao tentar excluir o agendamento.' });
     }

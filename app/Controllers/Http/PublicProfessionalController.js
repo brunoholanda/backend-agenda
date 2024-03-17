@@ -160,27 +160,26 @@ async index({ request, response }) {
     }
   }
 
-  async search({ request, response }) {
-    try {
-      const { especialidade, cidade } = request.get();
+async search({ request, response }) {
+  try {
+    const { especialidade, cidade } = request.get();
 
-      const query = PublicProfessional.query();
+    const query = PublicProfessional.query();
 
-      if (especialidade) {
-        query.where('especialidade', 'ILIKE', `%${especialidade}%`);
-      }
-
-      if (cidade) {
-        // 'ILIKE' para PostgreSQL
-        query.where('cidade', 'ILIKE', `%${cidade}%`);
-      }
-
-      const professionals = await query.fetch();
-      return response.json(professionals);
-    } catch (error) {
-      return response.status(500).json({ error: error.message });
+    if (especialidade) {
+      query.whereRaw('unaccent(especialidade) ILIKE unaccent(?)', [`%${especialidade}%`]);
     }
+
+    if (cidade) {
+      query.whereRaw('unaccent(cidade) ILIKE unaccent(?)', [`%${cidade}%`]);
+    }
+
+    const professionals = await query.fetch();
+    return response.json(professionals);
+  } catch (error) {
+    return response.status(500).json({ error: error.message });
   }
+}
 
 
   async destroy({ params, response }) {

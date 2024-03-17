@@ -27,6 +27,10 @@ Siga os seguintes passos para configurar e executar o projeto:
 
 Certifique-se de que todas as etapas acima foram concluídas com sucesso antes de começar a usar o backend do projeto Agenda.
 
+Comando a ser dado no postgress
+CREATE EXTENSION IF NOT EXISTS unaccent;
+
+
 ## Documentação
 
 
