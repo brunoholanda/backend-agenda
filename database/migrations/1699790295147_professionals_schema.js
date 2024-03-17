@@ -20,7 +20,6 @@ class ProfessionalsSchema extends Schema {
       table.string('estado', 2)
       table.string('titulo', 255)
       table.integer('company_id').unsigned().references('company_id').inTable('companies')
-      // Garanta que a tabela 'companies' seja criada primeiro, se ainda não existir
     })
   }
 

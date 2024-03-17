@@ -104,6 +104,7 @@ async index({ request, response }) {
             'instagram', 'atendimento', 'company_id'
         ]);
 
+
         const profilePic = request.file('foto', {
             types: ['image'],
             size: '1mb'

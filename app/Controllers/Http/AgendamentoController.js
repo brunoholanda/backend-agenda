@@ -4,12 +4,14 @@
 const Agendamento = use('App/Models/Agendamento')
 const Database = use('Database')
 const io = require("../../../start/socket");
+const CryptoJS = require("crypto-js");
+const Env = use('Env');
 
 class AgendamentoController {
 
   // Método para criar um agendamento
   async store({ request, response }) {
-    const data = request.only(['nome', 'data', 'horario', 'motivo', 'cpf', 'celular', 'planodental', 'professional_id', 'client_id', 'company_id', 'end_time']);
+    const data = request.only(['nome', 'data', 'horario', 'motivo', 'email', 'celular', 'planodental', 'professional_id', 'client_id', 'company_id', 'end_time']);
 
     const professionalIdValue = data.professional_id ? parseInt(data.professional_id) : null;
 
@@ -148,6 +150,53 @@ class AgendamentoController {
       return response.status(200).json({ success: true, message: 'Agendamento excluído com sucesso.' });} catch (err) {
       console.error("Erro ao tentar excluir o agendamento:", err);
       return response.status(500).json({ error: 'Erro ao tentar excluir o agendamento.' });
+    }
+  }
+
+  async showAgendamentoById({ params, response }) {
+    const secretKey = Env.get('SECRET_KEY');
+
+    try {
+      const agendamentoDetalhes = await Database
+        .table('agendamentos')
+        .where('agendamentos.id', params.id)
+        .innerJoin('professionals', 'agendamentos.professional_id', 'professionals.id')
+        .select('agendamentos.data', 'agendamentos.horario', 'professionals.nome as professional_nome')
+        .first();
+
+      if (!agendamentoDetalhes) {
+        return response.status(404).json({ message: 'Agendamento não encontrado.' });
+      }
+
+      const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(agendamentoDetalhes), secretKey).toString();
+
+      return response.status(200).json({ data: encryptedData }); // Garanta o envio como objeto JSON
+    } catch (err) {
+      console.error("Erro ao buscar detalhes do agendamento:", err);
+      return response.status(500).json({ error: 'Erro ao buscar detalhes do agendamento.' });
+    }
+  }
+
+  async updateAgendamentoById({ params, request, response }) {
+    try {
+      const agendamento = await Agendamento.find(params.id);
+      if (!agendamento) {
+        return response.status(404).json({ message: 'Agendamento não encontrado.' });
+      }
+
+      const { status } = request.only(['status']);
+
+      if (![1, 2].includes(status)) {
+        return response.status(400).json({ message: 'Status inválido.' });
+      }
+
+      agendamento.status = status;
+      await agendamento.save();
+
+      return response.status(200).json({ message: 'Status do agendamento atualizado com sucesso.', agendamento });
+    } catch (err) {
+      console.error("Erro ao atualizar status do agendamento:", err);
+      return response.status(500).json({ error: 'Erro ao atualizar status do agendamento.' });
     }
   }
 

@@ -8,4 +8,6 @@ new Ignitor(require('@adonisjs/fold'))
   .fireHttpServer()
   .catch(console.error)
 
-  require('./start/schedule')
+  require('./start/schedule');
+  require('./start/emailSchedules')
+

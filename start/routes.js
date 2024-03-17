@@ -24,6 +24,8 @@ Route.group(() => {
 Route.group(() => {
   Route.post('/password-reset', 'PasswordResetController.requestReset');
   Route.post('/reset-password', 'PasswordResetController.resetPassword');
+  Route.post('/password-reset-doctor', 'PasswordResetController.requestResetForDoctor');
+  Route.post('/reset-password-doctor', 'PasswordResetController.resetPasswordForDoctor');
 }).prefix('api/auth')
 
 // Rotas de Agendamento
@@ -37,6 +39,8 @@ Route.group(() => {
   Route.get('/todos-agendamentos/:id', 'AgendamentoController.all').middleware(['auth']);
   Route.get('chamados/:companyId', 'ChamadoController.index');
   Route.delete('agendamentos/:id', 'AgendamentoController.destroy').middleware(['auth']);
+  Route.get('/confirma-agendamento/:id', 'AgendamentoController.showAgendamentoById');
+  Route.put('/confirma-agendamento/:id', 'AgendamentoController.updateAgendamentoById');
 
 }).prefix('api')
 
@@ -49,7 +53,6 @@ Route.group(() => {
 }).prefix('api')
 
 
-// Rota de Teste (Considere remover ou proteger em produção)
 Route.get('test-db', 'TestDbConnectionController.index')
 
 
@@ -120,6 +123,7 @@ Route.group(() => {
 
 Route.group(() => {
   Route.get('clients/cpf/:cpf', 'ClientsController.findByCpf')
+  Route.get('clients/email/:client_email', 'ClientsController.findByEmail') // Use 'client_email' na rota, pois é o que seu controller espera
 }).prefix('api');
 
 
@@ -139,6 +143,10 @@ Route.group(() => {
 
   Route.get('/uploads/ProfileDoctor/:filename', async ({ params, response }) => {
     return response.download(Helpers.publicPath(`uploads/ProfileDoctor/${params.filename}`));
+  });
+
+  Route.get('/uploads/clientes/:filename', async ({ params, response }) => {
+    return response.download(Helpers.publicPath(`uploads/clientes/${params.filename}`));
   });
 
   Route.delete('/chamados/:id/deleteImage', 'ChamadoController.deleteImage');

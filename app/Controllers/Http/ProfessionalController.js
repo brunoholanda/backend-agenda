@@ -11,13 +11,12 @@ const Env = use('Env');
 
 
 class ProfessionalController {
-  // Método para criar um profissional
 
   async store({ request, response }) {
     const professionalData = request.only([
       'nome', 'cpf', 'data_de_nascimento', 'registro_profissional', 'celular',
       'assinatura', 'cep', 'endereco', 'numero', 'referencia',
-      'cidade', 'estado', 'titulo', 'company_id', 'login'
+      'cidade', 'estado', 'titulo', 'company_id', 'login', 'email'
     ]);
 
     const senha = request.input('senha');

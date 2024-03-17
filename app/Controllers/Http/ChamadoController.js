@@ -8,7 +8,6 @@ class ChamadoController {
   async store({ request, response }) {
     const { type, description, companyId } = request.only(['type', 'description', 'companyId'])
 
-    // Buscar o nome da empresa baseado no companyId
     const company = await Company.findBy('company_id', companyId)
     if (!company) {
       return response.status(404).json({ message: "Empresa não encontrada" })
@@ -43,9 +42,8 @@ class ChamadoController {
       description,
       company_id: companyId,
       ticket_number: ticketNumber,
-      image_path: imagePath // Caminho atualizado
+      image_path: imagePath
     })
-
     return response.status(201).json(chamado)
   }
 
