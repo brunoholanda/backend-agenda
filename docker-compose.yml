@@ -1,38 +1,11 @@
-version: '3.1'
-
+version: '3.3'
 services:
-  postgres_dev:
-    container_name: postgres_dev
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_PASSWORD: "@.3ZaJTY!z"
-      POSTGRES_DB: backendAgenda_dev
-    volumes:
-      - /opt/data-conteners/data_dev:/var/lib/postgresql/data
+  app:
+    build: .
     ports:
-      - "5432:5432"
-
-  postgres_hml:
-    container_name: postgres_hml
-    image: postgres
-    restart: always
+      - "3333:3333"
     environment:
-      POSTGRES_PASSWORD: "PEjK@4H.M4"
-      POSTGRES_DB: backendAgenda_test
+      - NODE_ENV=development
     volumes:
-      - /opt/data-conteners/data_test:/var/lib/postgresql/data
-    ports:
-      - "5433:5432"
-
-  postgres_prod:
-    container_name: postgres_prod
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_PASSWORD: "L88kfs8_gq"
-      POSTGRES_DB: backendAgenda_prod
-    volumes:
-      - /opt/data-conteners/data_prod:/var/lib/postgresql/data
-    ports:
-      - "5434:5432"
+      - .:/usr/src/app
+        #    command: adonis serve --dev
