@@ -28,6 +28,32 @@ class ClientsController {
     }
   }
 
+  async SearchByName({ request, response }) {
+    const company_id = request.input('company_id');
+    const searchName = request.input('searchName', '');
+
+    if (!company_id) {
+        return response.status(400).json({ message: 'ID da empresa não fornecido.' });
+    }
+
+    try {
+        let query = Client
+            .query()
+            .where('company_id', company_id)
+            .select('id', 'nome', 'client_email', 'celular'); // Especifique os campos necessários
+
+        if (searchName) {
+            query.where('nome', 'like', `%${searchName}%`);
+        }
+
+        const clients = await query.fetch(); // Executa a consulta com .fetch()
+
+        return response.json(clients.toJSON()); // Converte o resultado para JSON
+    } catch (error) {
+        console.error('Erro ao buscar clientes:', error);
+        return response.status(500).send('Erro interno do servidor');
+    }
+}
 
 
   async findByCpf({ params, request, response }) {

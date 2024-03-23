@@ -25,7 +25,7 @@ class AuthController {
       expirationDate.setDate(expirationDate.getDate() + 7);
 
       const token = jwt.sign({ userId: user.id }, 'sua_chave_secreta', {
-        expiresIn: '7d', // Define a expiração para 7 dias
+        expiresIn: '7d',
       });
 
       return response.status(200).json({ token });
@@ -44,13 +44,11 @@ class AuthController {
       return response.status(400).send('Todos os campos são obrigatórios')
     }
 
-    // Verificar unicidade do username
     const userExists = await User.findBy('username', username);
     if (userExists) {
       return response.status(400).send('Username já está em uso')
     }
 
-    // Verificar existência do company_id
     const companyExists = await Company.findBy('company_id', company_id);
     if (!companyExists) {
       return response.status(400).send('Empresa não encontrada')
@@ -60,7 +58,7 @@ class AuthController {
       const user = await User.create({ username, password, company_id })
       return response.status(201).json(user)
     } catch (error) {
-      console.error('Erro durante o registro:', error); // Log detalhado
+      console.error('Erro durante o registro:', error);
       return response.status(500).json({ message: 'Erro interno no servidor', error: error.message })
     }
   }

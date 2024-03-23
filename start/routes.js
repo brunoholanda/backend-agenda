@@ -46,11 +46,11 @@ Route.group(() => {
 }).prefix('api')
 
 Route.group(() => {
-  Route.post('recommendations', 'RecommendationController.store')
-  Route.post('/recommendations', 'RecommendationController.store')
-  Route.get('/recommendations/:companyId', 'RecommendationController.index')
-  Route.put('/recommendations/:id', 'RecommendationController.update')
-  Route.delete('/recommendations/:id', 'RecommendationController.destroy')
+  Route.post('recommendations', 'RecommendationController.store').middleware(['auth']);
+  Route.post('/recommendations', 'RecommendationController.store').middleware(['auth']);
+  Route.get('/recommendations/:companyId', 'RecommendationController.index').middleware(['auth']);
+  Route.put('/recommendations/:id', 'RecommendationController.update').middleware(['auth']);
+  Route.delete('/recommendations/:id', 'RecommendationController.destroy').middleware(['auth']);
 }).prefix('api')
 
 
@@ -112,6 +112,7 @@ Route.group(() => {
 Route.group(() => {
   Route.get('clients/search', 'ClientsController.search').middleware(['auth']); // Esta linha deve vir primeiro
   Route.get('clients', 'ClientsController.index').middleware(['auth']);
+  Route.get('clients-name', 'ClientsController.SearchByName').middleware(['auth']);
   Route.post('clients', 'ClientsController.store')
   Route.get('clients/:id', 'ClientsController.show').middleware(['auth']);
   Route.put('clients/:id', 'ClientsController.update').middleware(['auth']);
@@ -120,11 +121,12 @@ Route.group(() => {
   Route.post('/clients/:clientId/notes', 'ProntuarioController.store').middleware(['auth']);
   Route.get('/clients/:clientId/notes', 'ProntuarioController.index').middleware(['auth']);
   Route.post('/prontuarios', 'ProntuarioController.store').middleware(['auth']);
+
 }).prefix('api');
 
 Route.group(() => {
   Route.get('clients/cpf/:cpf', 'ClientsController.findByCpf')
-  Route.get('clients/email/:client_email', 'ClientsController.findByEmail') // Use 'client_email' na rota, pois é o que seu controller espera
+  Route.get('clients/email/:client_email', 'ClientsController.findByEmail')
 }).prefix('api');
 
 
