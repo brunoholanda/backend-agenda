@@ -3,20 +3,18 @@
 const Weekday = use('App/Models/Weekday')
 
 class WeekdayController {
-    // Método para criar um novo dia da semana
     async store({ request, response }) {
-        const { dia, ativo, professional_id } = request.only(['dia', 'ativo', 'professional_id'])
+      const { dia, ativo, professional_id, endereco_id } = request.only(['dia', 'ativo', 'professional_id', 'endereco_id'])
 
         try {
-            const weekday = await Weekday.create({ dia, ativo, professional_id })
-            return response.status(200).json(weekday)
+          const weekday = await Weekday.create({ dia, ativo, professional_id, endereco_id })
+          return response.status(200).json(weekday)
         } catch (err) {
             console.error(err.message)
             return response.status(500).json({ error: 'Erro ao adicionar dia da semana.' })
         }
     }
 
-    // Método para listar todos os dias da semana (ou de um profissional específico)
     async index({ request, response }) {
         const professionalId = request.input('professional_id')
 
@@ -44,26 +42,41 @@ class WeekdayController {
     }
 
     // Método para atualizar um dia da semana
-    async update({ params, request, response }) {
-        const { id } = params
-        const { ativo, startam, endam, startpm, endpm } = request.only(['ativo', 'startam', 'endam', 'startpm', 'endpm'])
+// Método para atualizar um dia da semana
+async update({ params, request, response }) {
+  const { id } = params;
+  let dataToUpdate = request.only(['ativo', 'startam', 'endam', 'startpm', 'endpm', 'endereco_id']);
 
-        try {
-            const weekday = await Weekday.find(id)
+  // Remove propriedades indefinidas ou nulas
+  dataToUpdate = Object.entries(dataToUpdate).reduce((acc, [key, value]) => {
+      if (value !== undefined && value !== null) {
+          acc[key] = value;
+      }
+      return acc;
+  }, {});
 
-            if (!weekday) {
-                return response.status(404).json({ error: 'Dia da semana não encontrado.' })
-            }
+  // Verifica se o objeto está vazio
+  if (Object.keys(dataToUpdate).length === 0) {
+      return response.status(400).json({ error: 'Nenhum dado fornecido para atualização.' });
+  }
 
-            weekday.merge({ ativo, startam, endam, startpm, endpm })
-            await weekday.save()
+  try {
+      const weekday = await Weekday.find(id);
 
-            return response.json(weekday)
-        } catch (err) {
-            console.error('Erro na atualização:', err.message)
-            return response.status(500).json({ error: 'Erro ao atualizar dia da semana.' })
-        }
-    }
+      if (!weekday) {
+          return response.status(404).json({ error: 'Dia da semana não encontrado.' });
+      }
+
+      weekday.merge(dataToUpdate);
+      await weekday.save();
+
+      return response.json(weekday);
+  } catch (err) {
+      console.error('Erro na atualização:', err.message);
+      return response.status(500).json({ error: 'Erro ao atualizar dia da semana.' });
+  }
+}
+
 
     // Método para deletar um dia da semana
     async destroy({ params, response }) {

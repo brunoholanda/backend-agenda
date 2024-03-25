@@ -67,7 +67,13 @@ Route.group(() => {
   Route.delete('/professionals/:id', 'ProfessionalController.destroy').middleware(['auth']);
   Route.post('/professionals/authenticate', 'ProfessionalController.authenticate');
   Route.get('/publicProfessionals/search', 'PublicProfessionalController.search');
-
+  Route.get('enderecos', 'EnderecoController.index').middleware(['auth']);
+  Route.post('enderecos', 'EnderecoController.store').middleware(['auth']);
+  Route.get('enderecos/:id', 'EnderecoController.show').middleware(['auth']);
+  Route.put('enderecos/:id', 'EnderecoController.update').middleware(['auth']);
+  Route.patch('enderecos/:id', 'EnderecoController.update').middleware(['auth']);
+  Route.delete('enderecos/:id', 'EnderecoController.destroy').middleware(['auth']);
+  Route.get('enderecos/professional/:professional_id', 'EnderecoController.findByProfessionalId').middleware(['auth']);
 }).prefix('api')
 
 
@@ -171,6 +177,7 @@ Route.group(() => {
   Route.post('professionals/:professional_id/planos', 'ProfessionalPlanoMedicoController.store')
   Route.delete('professionals/:professional_id/planos', 'ProfessionalPlanoMedicoController.destroy')
   Route.get('professionals/check-login/:login', 'ProfessionalController.checkLogin');
+
 }).prefix('api')
 
 Route.group(() => {
