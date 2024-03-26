@@ -16,30 +16,37 @@ class WeekdayController {
     }
 
     async index({ request, response }) {
-        const professionalId = request.input('professional_id')
+      const professionalId = request.input('professional_id');
+      const enderecoId = request.input('endereco_id'); // Obtém o endereco_id da requisição
 
-        try {
-            let weekdays
-            if (professionalId) {
-                weekdays = await Weekday.query().where('professional_id', professionalId).fetch()
+      try {
+          let query = Weekday.query();
 
-                if (weekdays.rows.length === 0) {
-                    const days = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"]
-                    for (const day of days) {
-                        await Weekday.create({ dia: day, ativo: false, professional_id: professionalId })
-                    }
-                    weekdays = await Weekday.query().where('professional_id', professionalId).fetch()
-                }
-            } else {
-                weekdays = await Weekday.all()
-            }
+          if (professionalId) {
+              query = query.where('professional_id', professionalId);
+          }
 
-            return response.json(weekdays)
-        } catch (err) {
-            console.error(err.message)
-            return response.status(500).json({ error: 'Erro ao buscar dias da semana.' })
-        }
-    }
+          if (enderecoId) {
+              query = query.where('endereco_id', enderecoId);
+          }
+
+          const weekdays = await query.fetch();
+
+          if (weekdays.rows.length === 0 && professionalId && !enderecoId) {
+              const days = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
+              for (const day of days) {
+                  await Weekday.create({ dia: day, ativo: false, professional_id: professionalId });
+              }
+              return response.json(await Weekday.query().where('professional_id', professionalId).fetch());
+          }
+
+          return response.json(weekdays);
+      } catch (err) {
+          console.error(err.message);
+          return response.status(500).json({ error: 'Erro ao buscar dias da semana.' });
+      }
+  }
+
 
     // Método para atualizar um dia da semana
 // Método para atualizar um dia da semana

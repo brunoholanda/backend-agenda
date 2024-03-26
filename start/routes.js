@@ -73,7 +73,7 @@ Route.group(() => {
   Route.put('enderecos/:id', 'EnderecoController.update').middleware(['auth']);
   Route.patch('enderecos/:id', 'EnderecoController.update').middleware(['auth']);
   Route.delete('enderecos/:id', 'EnderecoController.destroy').middleware(['auth']);
-  Route.get('enderecos/professional/:professional_id', 'EnderecoController.findByProfessionalId').middleware(['auth']);
+  Route.get('enderecos/professional/:professional_id', 'EnderecoController.findByProfessionalId');
 }).prefix('api')
 
 
