@@ -51,15 +51,22 @@ class ChamadoController {
     const { companyId } = params;
 
     try {
-      const chamados = await Chamado.query()
-        .where('company_id', companyId)
-        .fetch();
+        let chamados;
+        if (companyId) {
+            chamados = await Chamado.query()
+                .where('company_id', companyId)
+                .fetch();
+        } else {
+            // Buscando todos os chamados se companyId não for especificado
+            chamados = await Chamado.all();
+        }
 
-      return response.json(chamados);
+        return response.json(chamados);
     } catch (error) {
-      return response.status(500).json({ message: 'Erro ao buscar chamados' });
+        return response.status(500).json({ message: 'Erro ao buscar chamados' });
     }
-  }
+}
+
 
   async update({ params, request, response }) {
     const { id } = params;
