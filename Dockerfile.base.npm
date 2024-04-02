@@ -5,3 +5,5 @@ RUN npm install --loglevel verbose
 RUN npm install -g @adonisjs/cli --loglevel verbose
 RUN npm install @adonisjs/mail --loglevel verbose
 RUN npm install @adonisjs/ignitor --loglevel verbose
+RUN npm install node-cron --loglevel verbose
+RUN npm install socket.io --loglevel verbose
