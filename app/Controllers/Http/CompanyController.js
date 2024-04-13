@@ -100,6 +100,7 @@ class CompanyController {
         .leftJoin('users', 'companies.company_id', 'users.company_id')
         .select('companies.*')
         .select(Database.raw('MAX(users.token_expiration) as token_expiration'))
+        .select(Database.raw('MAX(users.username) as username'))
         .groupBy('companies.company_id');
 
       await Redis.set(cacheKey, JSON.stringify(companiesWithLatestTokenExpiration), 'EX', 600);
