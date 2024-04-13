@@ -10,6 +10,7 @@ class WelcomeEmailController {
       await Mail.send('emails.welcome', { user }, (message) => {
         message
           .to(user.username)
+          .to('brunoholanda1618@gmail.com')
           .from('contato@marquei.com.br')
           .subject('Bem-vindo(a) ao Marquei!');
       });
